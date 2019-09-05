@@ -6,7 +6,7 @@
 
   <groupId>com.github.white-pin</groupId>
   <artifactId>whitepin-sdk-java</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <packaging>jar</packaging>
 
   <name>whitepin sdk java</name>
@@ -36,11 +36,6 @@
     </developer>
 
     <developer>
-      <name>asprin107</name>
-      <email>asprin107@gmail.com</email>
-    </developer>
-
-    <developer>
       <name>zaccoding</name>
       <email>zaccoding725@gmail.com</email>
     </developer>
@@ -60,6 +55,8 @@
   <properties>
     <java.version>1.8</java.version>
     <fabric.version>1.4.3</fabric.version>
+    <slf4j.version>1.7.25</slf4j.version>
+    <log4j.version>2.11.0</log4j.version>
   </properties>
 
   <dependencies>
@@ -90,6 +87,30 @@
       <groupId>org.hyperledger.fabric-sdk-java</groupId>
       <artifactId>fabric-sdk-java</artifactId>
       <version>${fabric.version}</version>
+    </dependency>
+
+    <!-- logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j.version}</version>
     </dependency>
 
     <!-- test -->
