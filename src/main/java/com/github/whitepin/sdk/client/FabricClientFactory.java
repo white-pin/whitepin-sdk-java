@@ -40,18 +40,20 @@ import com.github.whitepin.sdk.context.FabricUserContext;
 import com.github.whitepin.sdk.exception.FabricClientCreateException;
 
 /**
- * Fabric client 및 ca client factory
+ * FabricClient Factory
  */
 public class FabricClientFactory {
 
     /**
-     * HFCAClient 인스턴스 생성
+     * Create a {@link HFCAClient} instance.
      *
-     * @param caName     : ca 이름 (e.g : ca0.testnet.com)
+     * @param caName     : name of ca (e.g : ca0.testnet.com)
      * @param protocol   : http or https
      * @param address    : ca server host
      * @param port       : ca server port
      * @param properties : properties
+     *
+     * @return A {HFCAClient} instance with given args.
      */
     public HFCAClient createCaClient(String caName, String protocol, String address, Integer port,
                                      Properties properties) throws FabricClientCreateException {
@@ -60,10 +62,12 @@ public class FabricClientFactory {
     }
 
     /**
-     * HFCAClient 인스턴스 생성 메소드
+     * Create a {@link HFCAClient} instance.
      *
-     * @param caName     : ca 이름 (e.g : ca0.testnet.com)
-     * @param caLocation : ca 주소 (http://192.168.10.11:7054)
+     * @param caName     : name of ca (e.g : ca0.testnet.com)
+     * @param caLocation : location of ca (e.g : http://192.168.10.11:7054)
+     *
+     * @return A {HFCAClient} instance with given args.
      */
     public HFCAClient createCaClient(String caName, String caLocation)
             throws FabricClientCreateException {
@@ -72,11 +76,11 @@ public class FabricClientFactory {
     }
 
     /**
-     * HFCAClient 인스턴스 생성 메소드
+     * Create a {@link HFCAClient} instance.
      *
-     * @param caName     : ca 이름 (e.g : ca0.testnet.com)
-     * @param caLocation : ca 주소 (http://192.168.10.11:7054)
-     * @param properties : ca properties (tls 등)
+     * @param caName     : name of ca (e.g : ca0.testnet.com)
+     * @param caLocation : location of ca (e.g : http://192.168.10.11:7054)
+     * @param properties : ca properties (including tls, etc)
      */
     public HFCAClient createCaClient(String caName, String caLocation, Properties properties)
             throws FabricClientCreateException {
@@ -105,14 +109,18 @@ public class FabricClientFactory {
     }
 
     /**
-     * 기본 HFClient 생성
+     * Create a {@link HFClient} instance.
+     *
+     * @return A {@link HFClient} instance with default settings.
      */
     public HFClient createHFClient() throws FabricClientCreateException {
         return createHFClient(null);
     }
 
     /**
-     * 기본 HFClient + user context 생성
+     * Create a {@link HFClient} instance with given {@link FabricUserContext}.
+     *
+     * @return A {@link HFClient} instance with given {@link FabricUserContext}.
      */
     public HFClient createHFClient(FabricUserContext fabricUserContext)
             throws FabricClientCreateException {

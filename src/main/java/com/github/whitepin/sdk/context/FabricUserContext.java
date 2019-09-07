@@ -20,18 +20,13 @@ import java.util.Set;
 import org.hyperledger.fabric.sdk.Enrollment;
 import org.hyperledger.fabric.sdk.User;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- *
+ * Fabric user context
  */
-@Getter
-@Setter
 public class FabricUserContext implements User {
 
     /**
-     * 기본 사용자 이름
+     * default user name.
      */
     public static final String DEFAULT_USER_NAME = "FabricUser";
 
@@ -45,6 +40,26 @@ public class FabricUserContext implements User {
     private String enrollmentSecret;
     private Enrollment enrollment;
     private boolean isAdmin;
+
+    /**
+     * @return A {@linke FabricUserContext} with default name and given {@link Enrollment}
+     */
+    public static FabricUserContext newInstance(Enrollment enrollment) {
+        return newInstance(DEFAULT_USER_NAME, enrollment);
+    }
+
+    /**
+     * @return A {@linke FabricUserContext} with given name and {@link Enrollment}
+     */
+    public static FabricUserContext newInstance(String name, Enrollment enrollment) {
+        return builder()
+                .name(name)
+                .enrollment(enrollment)
+                .build();
+    }
+
+    public FabricUserContext() {
+    }
 
     public FabricUserContext(String name, Set<String> roles, String account, String affiliation,
                              String mspId, String password, String enrollmentSecret,
@@ -60,22 +75,7 @@ public class FabricUserContext implements User {
         this.isAdmin = isAdmin;
     }
 
-    /**
-     * 기본 이름 + enrollment 용 User 생성
-     */
-    public static FabricUserContext newInstance(Enrollment enrollment) {
-        return newInstance(DEFAULT_USER_NAME, enrollment);
-    }
-
-    /**
-     * 이름 + enrollment를 가진 User 인스턴스 생성
-     */
-    public static FabricUserContext newInstance(String name, Enrollment enrollment) {
-        return builder()
-                .name(name)
-                .enrollment(enrollment)
-                .build();
-    }
+    // getters, setters, builder
 
     public static Builder builder() {
         return new Builder();
@@ -153,9 +153,6 @@ public class FabricUserContext implements User {
         this.isAdmin = isAdmin;
     }
 
-    public FabricUserContext() {
-    }
-
     public String toString() {
         return "FabricUserContext(name=" + getName()
                + ", roles=" + getRoles()
@@ -165,10 +162,12 @@ public class FabricUserContext implements User {
     }
 
     public static class Builder {
+
         private String name;
         private Set<String> roles;
         private String account;
         private String affiliation;
+        private FabricOrgType orgType;
         private String mspId;
         private String password;
         private String enrollmentSecret;
@@ -195,6 +194,11 @@ public class FabricUserContext implements User {
 
         public Builder affiliation(String affiliation) {
             this.affiliation = affiliation;
+            return this;
+        }
+
+        public Builder orgType(FabricOrgType orgType) {
+            this.orgType = orgType;
             return this;
         }
 

@@ -16,7 +16,7 @@
 package com.github.whitepin.sdk.context;
 
 /**
- * Fabric 조직 타입 Enum
+ * Type of fabric organizations
  */
 public enum FabricOrgType {
     NONE,

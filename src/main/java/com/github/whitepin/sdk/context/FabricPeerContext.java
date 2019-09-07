@@ -21,27 +21,24 @@ import java.util.Properties;
 
 import org.hyperledger.fabric.sdk.Peer.PeerRole;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
- * Fabric peer 노드 context
+ * Fabric peer node context
  */
-@Getter
-@Setter
-@NoArgsConstructor
 public class FabricPeerContext {
 
-    private String name;                    // peer 이름
-    private String location;                // peer 주소 e.g) grpc://localhost:7051
+    private String name;                    // name of peer
+    private String location;                // location of peer e.g) grpc://localhost:7051
     private Properties properties;          // peer properties
     private String hostAndPort;             // peer host e.g) peer0.peerorg1.testnet.com:7051
     private EnumSet<PeerRole> peerRoles;    // peer roles
 
+    public static FabricPeerContextBuilder builder() {
+        return new FabricPeerContextBuilder();
+    }
+
     /**
-     * Peer grpc 통신 관련 기본 값 설정
+     * Adds peer's default grpc settings if not exist.
+     *
      * - grpc.NettyChannelBuilderOption.maxInboundMessageSize==9000000
      */
     public static Properties appendDefaultProperties(Properties properties) {
@@ -63,14 +60,16 @@ public class FabricPeerContext {
     }
 
     /**
-     * 기본 Peer role 반환
+     * Return default peer roles.
      */
     public static EnumSet<PeerRole> createDefaultPeerRoles() {
         return EnumSet.of(PeerRole.ENDORSING_PEER, PeerRole.LEDGER_QUERY,
                           PeerRole.CHAINCODE_QUERY, PeerRole.EVENT_SOURCE);
     }
 
-    @Builder
+    public FabricPeerContext() {
+    }
+
     public FabricPeerContext(String name, String location, Properties properties, String hostAndPort,
                              EnumSet<PeerRole> peerRoles) {
         this.name = name;
@@ -78,5 +77,92 @@ public class FabricPeerContext {
         this.properties = properties;
         this.hostAndPort = hostAndPort;
         this.peerRoles = peerRoles;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getLocation() {
+        return this.location;
+    }
+
+    public Properties getProperties() {
+        return this.properties;
+    }
+
+    public String getHostAndPort() {
+        return this.hostAndPort;
+    }
+
+    public EnumSet<PeerRole> getPeerRoles() {
+        return this.peerRoles;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    public void setHostAndPort(String hostAndPort) {
+        this.hostAndPort = hostAndPort;
+    }
+
+    public void setPeerRoles(EnumSet<PeerRole> peerRoles) {
+        this.peerRoles = peerRoles;
+    }
+
+    public static class FabricPeerContextBuilder {
+        private String name;
+        private String location;
+        private Properties properties;
+        private String hostAndPort;
+        private EnumSet<PeerRole> peerRoles;
+
+        FabricPeerContextBuilder() {
+        }
+
+        public FabricPeerContext.FabricPeerContextBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public FabricPeerContextBuilder location(String location) {
+            this.location = location;
+            return this;
+        }
+
+        public FabricPeerContextBuilder properties(Properties properties) {
+            this.properties = properties;
+            return this;
+        }
+
+        public FabricPeerContextBuilder hostAndPort(String hostAndPort) {
+            this.hostAndPort = hostAndPort;
+            return this;
+        }
+
+        public FabricPeerContextBuilder peerRoles(EnumSet<PeerRole> peerRoles) {
+            this.peerRoles = peerRoles;
+            return this;
+        }
+
+        public FabricPeerContext build() {
+            return new FabricPeerContext(this.name, this.location, this.properties, this.hostAndPort,
+                                         this.peerRoles);
+        }
+
+        public String toString() {
+            return "FabricPeerContext.FabricPeerContextBuilder(name=" + this.name + ", location="
+                   + this.location + ", properties=" + this.properties + ", hostAndPort=" + this.hostAndPort
+                   + ", peerRoles=" + this.peerRoles + ")";
+        }
     }
 }

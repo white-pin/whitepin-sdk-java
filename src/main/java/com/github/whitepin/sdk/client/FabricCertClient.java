@@ -47,15 +47,16 @@ import com.github.whitepin.sdk.context.FabricUserContext;
 import com.github.whitepin.sdk.parser.FabricCertParser;
 
 /**
- * Fabric cert 관련 클라이언트
+ * Fabric cert client
  */
 public class FabricCertClient {
 
     private static final Logger logger = LoggerFactory.getLogger(FabricCertClient.class);
 
     /**
-     * affiliation 생성
-     * @return true : 생성 성공, 그 외 false
+     * Create a affilation
+     *
+     * @return true if created or already exist, otherwise false
      */
     public boolean createNewAffiliation(HFCAClient caClient, Enrollment enrollment, String name)
             throws InvalidArgumentException, AffiliationException {
@@ -63,7 +64,7 @@ public class FabricCertClient {
         requireNonNull(caClient, "caClient");
         requireNonNull(name, "name");
 
-        // 이미 존재하는 지 체크
+        // check already exist
         Optional<HFCAAffiliation> affOptional = getAffiliationByName(caClient, enrollment, name);
 
         if (affOptional.isPresent()) {
@@ -78,8 +79,10 @@ public class FabricCertClient {
     }
 
     /**
-     * 해당 enrollment의 affiliation tree 조회
-     * @return nullable optional
+     * Return a affiliation given enrollment
+     *
+     * @return An {@link Optional} containing {@link HFCAAffiliation} given {@link Enrollment}
+     * or else an empty {@link Optional}.
      */
     public Optional<HFCAAffiliation> getAffiliations(HFCAClient caClient, Enrollment enrollment)
             throws InvalidArgumentException, AffiliationException {
@@ -91,8 +94,10 @@ public class FabricCertClient {
     }
 
     /**
-     * 해당 enrollment의 affiliation + name 조회
-     * @retun nullable optional
+     * Return a affiliation given enrollment and name
+     *
+     * @return An {@link Optional} containing {@link HFCAAffiliation} given {@link Enrollment} and name
+     *         or else an empty {@link Optional}.
      */
     public Optional<HFCAAffiliation> getAffiliationByName(HFCAClient caClient, Enrollment enrollment,
                                                           String name)
@@ -107,7 +112,7 @@ public class FabricCertClient {
     }
 
     /**
-     * Affiliation 삭제
+     * Remove a affiliation by name if exist.
      */
     public void deleteAffiliation(HFCAClient caClient, Enrollment enrollment, String name)
             throws AffiliationException, InvalidArgumentException {
@@ -129,9 +134,9 @@ public class FabricCertClient {
     }
 
     /**
-     * new identity 등록
-     * (default : maxEnrollments == -1)
-     * @return true : 등록 성공, 그 외 false
+     * Register a new identity with maxEnrollments == -1.
+     *
+     * @return true if register, otherwise false
      */
     public boolean registerNewIdentity(HFCAClient caClient, Enrollment enrollment, String type, String name,
                                        String password, String affiliation, List<Attribute> attributes)
@@ -141,8 +146,9 @@ public class FabricCertClient {
     }
 
     /**
-     * new identity 등록
-     * @return true : 등록 성공, 그 외 false
+     * Register a new identity.
+     *
+     * @return true if register, otherwise false
      */
     public boolean registerNewIdentity(HFCAClient caClient, Enrollment enrollment, String type, String name,
                                        String password, String affiliation, List<Attribute> attributes,
@@ -169,7 +175,10 @@ public class FabricCertClient {
     }
 
     /**
-     * name으로 identity 조회
+     * Return a identity given name and enrollment.
+     *
+     * @return An {@link Optional} containing {@link HFCAIdentity} given {@link Enrollment} and name
+     *         or else an empty {@link Optional}.
      */
     public Optional<HFCAIdentity> getIdentityByName(HFCAClient caClient, Enrollment enrollment, String name)
             throws InvalidArgumentException, IdentityException {
@@ -189,9 +198,9 @@ public class FabricCertClient {
     }
 
     /**
-     * 기본 EnrollmentRequest를 사용하여 enroll
+     * Request to enroll with default {@link EnrollmentRequest}.
      *
-     * @return enrollment 구현체 (cert + pk)
+     * @return A {@link Enrollment} containing cert and private key
      */
     public Enrollment enroll(HFCAClient caClient, String enrollmentId, String enrollmentSecret)
             throws EnrollmentException, InvalidArgumentException {
@@ -200,8 +209,9 @@ public class FabricCertClient {
     }
 
     /**
-     * enroll
-     * @return enrollment 구현체 (cert + pk)
+     * Request to enroll given request.
+     *
+     * @return A {@link Enrollment} containing cert and private key
      */
     public Enrollment enroll(HFCAClient caClient, String enrollmentId, String enrollmentSecret,
                              EnrollmentRequest request) throws EnrollmentException, InvalidArgumentException {
@@ -213,7 +223,10 @@ public class FabricCertClient {
     }
 
     /**
-     * 해당 enrollment로 등록 한 cert 리스트 조회
+     * Return list of {@link HFCAX509Certificate} that enrolled by {@link Enrollment}
+     * with {@link HFCACertificateRequest} request filters.
+     *
+     * @return list of {@link HFCAX509Certificate} or empty list
      */
     public List<HFCAX509Certificate> getCertificates(HFCAClient caClient, Enrollment enrollment,
                                                      HFCACertificateRequest requestFilter) throws Exception {
@@ -240,6 +253,12 @@ public class FabricCertClient {
         return x509Certificates;
     }
 
+    /**
+     * Return list of {@link HFCAX509Certificate} that enrolled by {@link Enrollment}
+     * with {@link HFCACertificateRequest} request filters.
+     *
+     * @return list of {@link HFCAX509Certificate}
+     */
     public List<HFCAX509Certificate> getCertificatesByCn(HFCAClient caClient, Enrollment enrollment, String cn)
             throws Exception {
 
@@ -265,9 +284,9 @@ public class FabricCertClient {
     }
 
     /**
-     * HFCAAffiliationResp 성공 여부 반환
+     * Check success or not given {@link HFCAAffiliationResp}.
      *
-     * @return true : 200 <= status code < 300 인 경우, false : 그 외
+     * @return true : 200 <= status code < 300, otherwise false
      */
     protected boolean is2xxSuccessful(HFCAAffiliationResp response) {
         if (response == null) {
@@ -277,13 +296,6 @@ public class FabricCertClient {
         return response.getStatusCode() >= 200 && response.getStatusCode() < 300;
     }
 
-    /**
-     * HFCAAffiliation의 child를 순회하면서 name 값이 같은 Affiliation 인스턴스 조회
-     *
-     * @param affiliation : root affiliation
-     * @param name        : 찾을 affiliation name
-     * @return affiliation이 name 인 HFCAAffiliation or null
-     */
     protected HFCAAffiliation searchAffiliationWithRecursively(HFCAAffiliation affiliation, String name)
             throws AffiliationException {
         if (name == null || name.length() == 0 || affiliation == null) {
@@ -305,7 +317,7 @@ public class FabricCertClient {
     }
 
     /**
-     * 기본 EnrollmentRequest 생성
+     * Create a default {@link EnrollmentRequest} instance.
      */
     protected EnrollmentRequest createDefaultEnrollmentRequest() {
         EnrollmentRequest request = new EnrollmentRequest();

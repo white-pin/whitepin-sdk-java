@@ -18,6 +18,8 @@ package com.github.whitepin.sdk.integration;
 
 import static com.github.whitepin.sdk.constant.FabricSdkConstants.ADMIN_ATTRIBUTES;
 import static com.github.whitepin.sdk.constant.FabricSdkConstants.CLIENT_IDENTITY_TYPE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.List;
@@ -39,7 +41,7 @@ import com.github.whitepin.sdk.common.TestHelper;
 import com.github.whitepin.sdk.context.FabricUserContext;
 
 /**
- * Fabric cert client 통합 테스트
+ * Integration test of FabricCertClient
  */
 public class FabricCertClientIT {
 
@@ -51,7 +53,7 @@ public class FabricCertClientIT {
     @Before
     public void setUp() throws Exception {
         String name = "ca0";
-        String url = "https://127.0.0.1:7054";
+        String url = "https://" + TestConstants.LOCAL_HOST + ":7054";
         Properties properties = new Properties();
         File certFile = new File("src/test/fixture/certintegration/ca-msp/ca-cert.pem");
         properties.setProperty("pemFile", certFile.getAbsolutePath());
@@ -67,20 +69,11 @@ public class FabricCertClientIT {
                                    .enrollmentSecret("adminpw")
                                    .build();
 
-        TestHelper.out("> Try to register ca admin..");
         Enrollment enroll = caClient.enroll(caAdmin.getName(), caAdmin.getEnrollmentSecret());
+        assertThat(enroll).isNotNull();
         caAdmin.setEnrollment(enroll);
-        TestHelper.out("> Success to register..");
     }
 
-    /**
-     * - affiliation 추가
-     * - identity
-     * - enroll
-     * - reenroll
-     * - revoke
-     * - reenroll
-     */
     @Test
     public void runTests() throws Exception {
         FabricUserContext peerorg1Admin = FabricUserContext.builder()
@@ -89,74 +82,62 @@ public class FabricCertClientIT {
                                                            .affiliation("peerorg1")
                                                            .build();
 
-        // 1) affiliation 추가
-        TestHelper.out("## Check affilication > %s", peerorg1Admin.getAffiliation());
+        // 1) Check affiliation "peerorg1" > register
         Optional<HFCAAffiliation> affOptional = certClient.getAffiliationByName(caClient,
                                                                                 caAdmin.getEnrollment(),
                                                                                 peerorg1Admin.getAffiliation());
 
-        if (!affOptional.isPresent()) {
-            TestHelper.out("> Try to create new affiliation");
-            certClient.createNewAffiliation(caClient, caAdmin.getEnrollment(), peerorg1Admin.getAffiliation());
-        } else {
-            TestHelper.out("> Already exist");
-        }
+        assertThat(affOptional.isPresent()).isFalse();
+        certClient.createNewAffiliation(caClient, caAdmin.getEnrollment(), peerorg1Admin.getAffiliation());
 
-        // 2) identity 추가
-        TestHelper.out("## Try to check identity %s", peerorg1Admin.getName());
+        // 2) Check identity > register
         Optional<HFCAIdentity> identityOptional = certClient.getIdentityByName(caClient,
                                                                                caAdmin.getEnrollment(),
                                                                                peerorg1Admin.getName());
-        if (!identityOptional.isPresent()) {
-            TestHelper.out("> not exist. will register");
-            boolean result = certClient.registerNewIdentity(caClient, caAdmin.getEnrollment(),
-                                                            CLIENT_IDENTITY_TYPE,
-                                                            peerorg1Admin.getName(),
-                                                            peerorg1Admin.getPassword(),
-                                                            peerorg1Admin.getAffiliation(), ADMIN_ATTRIBUTES);
+        assertThat(identityOptional.isPresent()).isFalse();
+        boolean result = certClient.registerNewIdentity(caClient, caAdmin.getEnrollment(),
+                                                        CLIENT_IDENTITY_TYPE,
+                                                        peerorg1Admin.getName(),
+                                                        peerorg1Admin.getPassword(),
+                                                        peerorg1Admin.getAffiliation(), ADMIN_ATTRIBUTES);
+        assertThat(result).isTrue();
+        peerorg1Admin.setEnrollmentSecret(peerorg1Admin.getPassword());
 
-            if (result) {
-                peerorg1Admin.setEnrollmentSecret(peerorg1Admin.getPassword());
-            }
-
-            TestHelper.out(">> Identity result > " + result);
-        } else {
-            TestHelper.out("> Already exist identity");
-            peerorg1Admin.setEnrollmentSecret(peerorg1Admin.getPassword());
-        }
-
-        // 3) enrollment
-        TestHelper.out("## Try to check enrollments with filter with enrollment id : %s",
-                       peerorg1Admin.getName());
+        // 3) Check enrollment > enroll
         HFCACertificateRequest requestFilter = caClient.newHFCACertificateRequest();
         requestFilter.setEnrollmentID(peerorg1Admin.getName());
         List<HFCAX509Certificate> certs = certClient.getCertificates(caClient, caAdmin.getEnrollment(),
                                                                      requestFilter);
-        if (!certs.isEmpty()) {
-            TestHelper.out("> Already exist certs. size : %d", certs.size());
-        }
-
-        TestHelper.out("> Try to enroll %s(%s)", peerorg1Admin.getName(), peerorg1Admin.getEnrollmentSecret());
+        assertThat(certs).isEmpty();
         Enrollment enrollment = certClient.enroll(caClient, peerorg1Admin.getName(),
                                                   peerorg1Admin.getEnrollmentSecret());
 
+        assertThat(enrollment).isNotNull();
         peerorg1Admin.setEnrollment(enrollment);
-        TestHelper.out(">> Success to enroll");
-        TestHelper.out(peerorg1Admin.getEnrollment().getCert());
 
         // 5) reenroll
-        TestHelper.out("## Try to reenroll cert");
         Enrollment tempCert = caClient.reenroll(peerorg1Admin);
-        TestHelper.out("> Success to reenroll");
+        assertThat(tempCert).isNotNull();
 
-        // 4) revoke
+        // 4) revoke & assert
+        requestFilter = caClient.newHFCACertificateRequest();
+        requestFilter.setEnrollmentID(peerorg1Admin.getName());
+        requestFilter.setRevoked(false);
+
+        assertThat(certClient.getCertificates(caClient, peerorg1Admin.getEnrollment(), requestFilter).size())
+                .isEqualTo(2);
+
         caClient.revoke(caAdmin, tempCert, "Reason from revoke request");
-        TestHelper.out("> Success to revoke..");
+
+        requestFilter = caClient.newHFCACertificateRequest();
+        requestFilter.setEnrollmentID(peerorg1Admin.getName());
+        requestFilter.setRevoked(false);
+
+        assertThat(certClient.getCertificates(caClient, peerorg1Admin.getEnrollment(), requestFilter).size())
+                .isEqualTo(1);
 
         // 5) reenroll
-        TestHelper.out("## Try to reenroll after revoke another cert");
         Enrollment reenroll = caClient.reenroll(peerorg1Admin);
-        TestHelper.out("> Success to reenroll");
+        assertThat(reenroll).isNotNull();
     }
-
 }

@@ -15,7 +15,7 @@
 package com.github.whitepin.sdk.exception;
 
 /**
- * Fabric client 관련 생성 예외
+ * Fabric client creation exception
  */
 public class FabricClientCreateException extends Exception {
     public FabricClientCreateException(String message, Throwable parent) {

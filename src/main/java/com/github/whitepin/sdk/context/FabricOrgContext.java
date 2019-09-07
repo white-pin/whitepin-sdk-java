@@ -21,17 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
- * Fabric 조직 관련 context
+ * Fabric organization context.
  */
-@Getter
-@Setter
-@NoArgsConstructor
 public class FabricOrgContext {
 
     private FabricOrgType orgType;
@@ -42,7 +34,13 @@ public class FabricOrgContext {
     private Map<String, FabricPeerContext> peers = new HashMap<>();
     private Map<String, FabricOrdererContext> orderers = new HashMap<>();
 
-    @Builder
+    public static FabricOrgContextBuilder builder() {
+        return new FabricOrgContextBuilder();
+    }
+
+    public FabricOrgContext() {
+    }
+
     public FabricOrgContext(FabricOrgType orgType, String name, String domain) {
         this.orgType = orgType;
         this.name = name;
@@ -50,7 +48,7 @@ public class FabricOrgContext {
     }
 
     /**
-     * Fabric user context 추가
+     * Adds a fabric user context given name and {@link FabricUserContext}.
      */
     public void addUser(String name, FabricUserContext userContext) {
         synchronized (users) {
@@ -59,7 +57,7 @@ public class FabricOrgContext {
     }
 
     /**
-     * Fabric peer context 추가
+     * Adds a fabric peer context given name and {@link FabricPeerContext}.
      */
     public void addPeer(String name, FabricPeerContext peerContext) {
         synchronized (peers) {
@@ -68,7 +66,7 @@ public class FabricOrgContext {
     }
 
     /**
-     * Fabric orderer context 추가
+     * Adds a fabric orderer context given name and {@link FabricOrdererContext}.
      */
     public void addOrderer(String name, FabricOrdererContext ordererContext) {
         synchronized (orderers) {
@@ -77,9 +75,10 @@ public class FabricOrgContext {
     }
 
     /**
-     * Fabric admin 반환
+     * Return a admin {@link FabricUserContext}.
      *
-     * @throws IllegalStateException admin이 1개 이상 존재 할 경우 예외 전가
+     * @throws IllegalStateException if there is no a admin in this organization
+     * @return A {@link FabricUserContext} with admin attributes.
      */
     public FabricUserContext getAdmin() {
         synchronized (users) {
@@ -94,6 +93,88 @@ public class FabricOrgContext {
             }
 
             return admin.get(0);
+        }
+    }
+
+    // getters, setters, builder
+    public FabricOrgType getOrgType() {
+        return this.orgType;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getDomain() {
+        return this.domain;
+    }
+
+    public Map<String, FabricUserContext> getUsers() {
+        return this.users;
+    }
+
+    public Map<String, FabricPeerContext> getPeers() {
+        return this.peers;
+    }
+
+    public Map<String, FabricOrdererContext> getOrderers() {
+        return this.orderers;
+    }
+
+    public void setOrgType(FabricOrgType orgType) {
+        this.orgType = orgType;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public void setUsers(Map<String, FabricUserContext> users) {
+        this.users = users;
+    }
+
+    public void setPeers(Map<String, FabricPeerContext> peers) {
+        this.peers = peers;
+    }
+
+    public void setOrderers(Map<String, FabricOrdererContext> orderers) {
+        this.orderers = orderers;
+    }
+
+    public static class FabricOrgContextBuilder {
+        private FabricOrgType orgType;
+        private String name;
+        private String domain;
+
+        FabricOrgContextBuilder() {
+        }
+
+        public FabricOrgContextBuilder orgType(FabricOrgType orgType) {
+            this.orgType = orgType;
+            return this;
+        }
+
+        public FabricOrgContextBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public FabricOrgContextBuilder domain(String domain) {
+            this.domain = domain;
+            return this;
+        }
+
+        public FabricOrgContext build() {
+            return new FabricOrgContext(this.orgType, this.name, this.domain);
+        }
+
+        public String toString() {
+            return "FabricOrgContext.FabricOrgContextBuilder(orgType=" + this.orgType + ", name=" + this.name
+                   + ", domain=" + this.domain + ")";
         }
     }
 }
