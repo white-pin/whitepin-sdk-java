@@ -1,6 +1,9 @@
-# 화이트핀 SDK JAVA  
+# WHITE PIN SDK JAVA
 
-> ## 시작하기  
+This project is java toolkit for fabric and white pin chaincode.
+  
+
+> ## Getting started  
 
 - **maven**  
   
@@ -43,13 +46,43 @@ dependencies {
 
 > ## Features  
 
-- Fabric ca client 관련 기능
-    - affiliation 관리
-    - identity 관리
-    - 
-- Fabric channel 관련 기능
-- Fabric chaincode 관련 기능
-- Whitepin chaincode 관련 기능  
-
+- **FabricCaClient**  
+    - wrapper of HFCAClient.java
+    - management of affiliation
+    - management of identity
+- **FabricChannelClient**
+    - wrapper of HFClient.java
+    - create a channel (request to orderer)
+    - build Channel.java about existing channel
+- **FabricChaincodeClient**  
+    - wrapper of HFClient.java
+    - invoke and query for instantiated chaincode
+- **Whitepin chaincode**  
+    - invoke and query for instantiated whitepin chaincode
+---  
 
 ---  
+
+> ## Integration tests  
+
+
+- **FabricCertClient**  
+
+- start ca server  
+
+```$xslt
+$ src/test/fixture/certintegration/whitepin.sh restart
+```  
+
+- run com.github.whitepin.sdk.integration.FabricCertClientIT
+
+
+- **FabricChannelClient**  
+
+- start orderers, peers  
+
+```$xslt
+$ src/test/fixture/channelintegration/whitepin.sh restart
+```  
+
+- run com.github.whitepin.sdk.integration.FabricChannelClientIT

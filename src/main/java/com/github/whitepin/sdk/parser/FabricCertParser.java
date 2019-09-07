@@ -39,7 +39,7 @@ import org.hyperledger.fabric.sdk.exception.CryptoException;
 import org.hyperledger.fabric.sdk.identity.X509Enrollment;
 
 /**
- * Fabric cert 관련 파싱 유틸
+ * Utils of fabric certs
  */
 public class FabricCertParser {
 
@@ -48,7 +48,7 @@ public class FabricCertParser {
     }
 
     /**
-     * Pem private key bytes -> PrivateKey 인스턴스 변환
+     * Convert given pemKey bytes to {@link PrivateKey} instance.
      */
     public static PrivateKey getPrivateKeyFromPemBytes(byte[] pemKey) throws CryptoException {
         PrivateKey pk = null;
@@ -72,7 +72,7 @@ public class FabricCertParser {
     }
 
     /**
-     * private key pem bytes + cert bytes -> Enrollment 인스턴스 반환
+     * Convert given private key pem and cert's bytes to {@link Enrollment} instance.
      */
     public static Enrollment x509EnrollmentOf(byte[] privateKeyPem, byte[] cert) throws CryptoException {
         return new X509Enrollment(
@@ -82,7 +82,7 @@ public class FabricCertParser {
     }
 
     /**
-     * Cert로 부터 cn 값 추출
+     * Extract cn value from given {@link X509Certificate}
      */
     public static String getCnValue(X509Certificate cert) throws CertificateEncodingException {
         if (cert == null) {

@@ -22,7 +22,7 @@ import java.util.List;
 import org.hyperledger.fabric_ca.sdk.Attribute;
 
 /**
- * Fabric sdk 상수
+ * Constants for fabric.
  */
 public class FabricSdkConstants {
 
