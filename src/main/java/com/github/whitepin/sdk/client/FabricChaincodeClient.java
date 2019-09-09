@@ -21,7 +21,7 @@ import com.github.whitepin.sdk.contruct.FabricContruct;
 
 public class FabricChaincodeClient {
 	private int TRANSACTION_WAIT_TIME = 20000;
-	
+	 
 	public FabricContruct fabricContruct;
 	public Channel channel;
 	public HFClient client;

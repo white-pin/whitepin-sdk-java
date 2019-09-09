@@ -19,7 +19,7 @@ public class FabricContruct {
 	//TODO :: properties로...
 	private final String caName = "caName";
 	private final String caLocation = "caLocation"; 
-	private final String userName = "userName";
+	private final String userName = "userName"; 
 	private final String userPassword = "userPassword";
 	
 	private final String orgMsp = "orgMsp";
