@@ -24,7 +24,7 @@ public class FabricContruct {
 	
 	private final String orgMsp = "orgMsp";
 	
-	private final String ordererName = "ordererName";
+	private final String ordererName = "ordererName"; 
 	private final String ordererLocation = "ordererLocation";
 	private final String peerName1 = "peerName1";
 	private final String peerLocation1 = "peerLocation1";

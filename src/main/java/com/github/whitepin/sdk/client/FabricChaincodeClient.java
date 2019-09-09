@@ -30,7 +30,7 @@ public class FabricChaincodeClient {
 	
 	public FabricChaincodeClient() {
 		fabricContruct = new FabricContruct();
-		channel = fabricContruct.getChannel();
+		channel = fabricContruct.getChannel(); 
 		client = fabricContruct.getClient();
 	}
 	
