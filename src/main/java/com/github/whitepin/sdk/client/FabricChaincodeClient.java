@@ -17,24 +17,22 @@ import org.hyperledger.fabric.sdk.TransactionRequest.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.whitepin.sdk.contruct.FabricContruct;
-
 public class FabricChaincodeClient {
 	private int TRANSACTION_WAIT_TIME = 20000;
 	 
-	public FabricContruct fabricContruct;
-	public Channel channel;
-	public HFClient client;
+	private Channel channel;
+	private HFClient client;
 	
 	public Logger logger = LoggerFactory.getLogger(FabricChaincodeClient.class);
 	
-	public FabricChaincodeClient() {
-		fabricContruct = new FabricContruct();
-		channel = fabricContruct.getChannel(); 
-		client = fabricContruct.getClient();
+	public FabricChaincodeClient(Channel channel, HFClient client) {
+		this.channel = channel; 
+		this.client = client;
 	}
 	
-	public void query(String fcn, ChaincodeID chaincodeID, String...args) throws Exception {
+	public String query(String fcn, ChaincodeID chaincodeID, String...args) throws Exception {
+		String payload = "";
+		
 		QueryByChaincodeRequest queryByChaincodeRequest = client.newQueryProposalRequest();
 		queryByChaincodeRequest.setArgs(args);
 		queryByChaincodeRequest.setFcn(fcn);
@@ -43,16 +41,17 @@ public class FabricChaincodeClient {
 		Collection<ProposalResponse> queryByChaincode = channel.queryByChaincode(queryByChaincodeRequest);
 		for (ProposalResponse proposalResponse : queryByChaincode) {
 			if (!proposalResponse.isVerified() || proposalResponse.getStatus() != ProposalResponse.Status.SUCCESS) {
-                //TODO :: 실패처리
-				logger.warn("실패처리....");
+				logger.error("failed to query....");
+				logger.error("function :: {}, args :: {}, verified :: {}, status :: {}", fcn, args, proposalResponse.isVerified(), proposalResponse.getStatus());
             } else {
-                String payload = proposalResponse.getProposalResponse().getResponse().getPayload().toStringUtf8();
-                	logger.info("Query payload of b from peer %s returned %s", proposalResponse.getPeer().getName(), payload);
+                payload = proposalResponse.getProposalResponse().getResponse().getPayload().toStringUtf8();
+                logger.info("Query payload of b from peer %s returned %s", proposalResponse.getPeer().getName(), payload);
             }
 		}
+		return payload;
 	}
 	
-	public void invoke(String fcn, ChaincodeID chaincodeID, Type chaincodeLanguage, String...args) throws Exception {
+	public boolean invoke(String fcn, ChaincodeID chaincodeID, Type chaincodeLanguage, String...args) throws Exception {
 		List<ProposalResponse> successful = new ArrayList<ProposalResponse>();
 		List<ProposalResponse> failed = new ArrayList<ProposalResponse>();
 		
@@ -73,28 +72,26 @@ public class FabricChaincodeClient {
             }
         }
 
-        logger.warn("Received %d transaction proposal responses. Successful+verified: {} . Failed: {}",
+        logger.warn("Received {} transaction proposal responses. Successful+verified: {} . Failed: {}",
                 transactionPropResp.size(), successful.size(), failed.size());
         if (failed.size() > 0) {
             ProposalResponse firstTransactionProposalResponse = failed.iterator().next();
             logger.error("Not enough endorsers for invoke:" + failed.size() + " endorser error: " +
                     firstTransactionProposalResponse.getMessage() +
                     ". Was verified: " + firstTransactionProposalResponse.isVerified());
+            return false;
         }
 
-        // Check that all the proposals are consistent with each other. We should have only one set
-        // where all the proposals above are consistent. Note the when sending to Orderer this is done automatically.
-        //  Shown here as an example that applications can invoke and select.
-        // See org.hyperledger.fabric.sdk.proposal.consistency_validation config property.
         Collection<Set<ProposalResponse>> proposalConsistencySets = SDKUtils.getProposalConsistencySets(transactionPropResp);
         if (proposalConsistencySets.size() != 1) {
             logger.error("Expected only one set of consistent proposal responses but got {}", proposalConsistencySets.size());
+            return false;
         }
         logger.info("Successfully received transaction proposal responses.");
 
-        ////////////////////////////
         // Send Transaction Transaction to orderer
         logger.info("Sending chaincode transaction to orderer.");
         channel.sendTransaction(successful).get(TRANSACTION_WAIT_TIME, TimeUnit.SECONDS);
+        return true;
 	}
 }

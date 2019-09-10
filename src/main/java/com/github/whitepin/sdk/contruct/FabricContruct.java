@@ -17,21 +17,21 @@ import com.github.whitepin.sdk.context.FabricUserContext;
 public class FabricContruct {
 
 	//TODO :: properties로...
-	private final String caName = "caName";
-	private final String caLocation = "caLocation"; 
-	private final String userName = "userName"; 
-	private final String userPassword = "userPassword";
+	private final String caName = "ca0.caorg.test3";
+	private final String caLocation = "http://192.168.30.15:7054"; 
+	private final String userName = "caadmin@RootCA"; 
+	private final String userPassword = "1q2w3e4r5T";
 	
-	private final String orgMsp = "orgMsp";
+	private final String orgMsp = "peerorg1";
 	
-	private final String ordererName = "ordererName"; 
-	private final String ordererLocation = "ordererLocation";
-	private final String peerName1 = "peerName1";
-	private final String peerLocation1 = "peerLocation1";
-	private final String peerName2 = "peerName2";
-	private final String peerLocation2 = "peerLocation2";
+	private final String ordererName = "orderer0.ordererorg.test3"; 
+	private final String ordererLocation = "grpc://192.168.30.16:7050";
+	private final String peerName1 = "peer0";
+	private final String peerLocation1 = "grpc://192.168.30.17:7051";
+	private final String peerName2 = "peer1";
+	private final String peerLocation2 = "grpc://192.168.30.18:7051";
 	
-	private final String channelName = "channelName";
+	private final String channelName = "channel02";
 	
 	//TODO :: 임시...
 	public Channel channel;
