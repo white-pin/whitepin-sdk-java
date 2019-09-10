@@ -1,38 +1,50 @@
 package com.github.whitepin.sdk.whitepin.vo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Park
  *
  */
 public class UserVo {
 	// 데이터 셋의 성격을 구분하는 ID (User는 1)
+	@JsonProperty("RecType")
 	private int recType;
 	
 	// 사용자 토큰. 사용자가 누구인지 확인할 때 사용하는 고유한 ID이며 hash값을 문자열로 저장한다. (data-set key)
+	@JsonProperty("UserTkn")
 	private String userTkn;
 	
 	// 판매한 거래의 양.
+	@JsonProperty("SellAmt")
 	private int sellAmt;
 	
 	// 구매한 거래의 양.
+	@JsonProperty("BuyAmt")
 	private int buyAmt;
 	
 	// 판매시, 평가받지 않은 거래의 양. (0점 처리된 판매량)
+	@JsonProperty("SellEx")
 	private int sellEx;
 	
 	// 구매시, 평가받지 않은 거래의 양. (0점 처리된 구매량)
+	@JsonProperty("BuyEx")
 	private int buyEx;
 	
 	// 사용자 생성날짜
+	@JsonProperty("Date")
 	private String date;
 	
 	// 판매 평가점수의 합
+	@JsonProperty("SellSum")
 	private SellSum sellSum;
 	
 	// 구매 평가점수의 합
+	@JsonProperty("BuySum")
 	private BuySum buySum;
 	
 	// 전체 거래 평가점수의 합
+	@JsonProperty("TradeSum")
 	private TradeSum tradeSum;
 	
 	// 판매 평가점수의 평균
@@ -110,15 +122,19 @@ public class UserVo {
 
 	public static class SellSum {
 		// 판매에 대해 받은 평가점수의 합.
+		@JsonProperty("TotSum")
 		private int totSum;
 		
 		// 판매에 대해 1번 질문에 대하여 받은 평가점수의 합.
+		@JsonProperty("EvalSum01")
 		private int evalSum01;
 		
 		// 판매에 대해 2번 질문에 대하여 받은 평가점수의 합.
+		@JsonProperty("EvalSum02")
 		private int evalSum02;
 		
 		// 판매에 대해 3번 질문에 대하여 받은 평가점수의 합.
+		@JsonProperty("EvalSum03")
 		private int evalSum03;
 		
 		public int getTotSum() {
@@ -188,15 +204,19 @@ public class UserVo {
 	
 	public static class BuySum {
 		// 구매에 대해 받은 평가점수의 합.
+		@JsonProperty("TotSum")
 		private int totSum;
 		
 		// 구매에 대해 1번 질문에 대하여 받은 평가점수의 합.
+		@JsonProperty("EvalSum01")
 		private int evalSum01;
 		
 		// 구매에 대해 2번 질문에 대하여 받은 평가점수의 합.
+		@JsonProperty("EvalSum02")
 		private int evalSum02;
 		
 		// 구매에 대해 3번 질문에 대하여 받은 평가점수의 합.
+		@JsonProperty("EvalSum03")
 		private int evalSum03;
 
 		public int getTotSum() {
@@ -266,15 +286,19 @@ public class UserVo {
 	
 	public static class TradeSum {
 		// 전체 거래에 대해 받은 평가점수의 합.
+		@JsonProperty("TotSum")
 		private int totSum;
 		
 		// 전체 거래에 대해 1번 질문에 대하여 받은 평가점수의 합.
+		@JsonProperty("EvalSum01")
 		private int evalSum01;
 		
 		// 전체 거래에 대해 2번 질문에 대하여 받은 평가점수의 합.
+		@JsonProperty("EvalSum02")
 		private int evalSum02;
 		
 		// 전체 거래에 대해 3번 질문에 대하여 받은 평가점수의 합.
+		@JsonProperty("EvalSum03")
 		private int evalSum03;
 
 		public int getTotSum() {

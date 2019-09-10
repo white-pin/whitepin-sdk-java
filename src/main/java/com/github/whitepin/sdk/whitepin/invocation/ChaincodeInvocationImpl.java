@@ -31,7 +31,6 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
 	private String QUERY_USER = "queryUser";
 	private String CREATE_TRADE = "createTrade";
 	private String QUERY_TRADE_WITH_ID = "queryTradeWithId";
-//	private String ADD_SCORE_META = "addScoreMeta";
 	private String QUERY_SCORE_TEMP = "queryScoreTemp";
 	private String QUERY_TRADE_WITH_CONDITION = "queryTradeWithCondition";
 	private String CLOSE_TRADE = "closeTrade";
@@ -123,12 +122,6 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
 		TradeVo tradeVo = objectMapper.readValue(result, TradeVo.class);
 		return tradeVo;
 	}
-
-//	@Override
-//	public boolean addScoreMeta(String scoreKey, String tradeId) throws Exception {
-//		boolean result = fabricChaincodeClient.invoke(ADD_SCORE_META, chaincodeID, CHAINCODE_LANG, new String[] {scoreKey, tradeId});
-//		return result;
-//	}
 
 	@Override
 	public ScoreVo queryScoreTemp(String scoreKey) throws Exception {

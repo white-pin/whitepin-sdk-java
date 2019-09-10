@@ -82,13 +82,6 @@ public class FabricChaincodeClient {
             return false;
         }
 
-        Collection<Set<ProposalResponse>> proposalConsistencySets = SDKUtils.getProposalConsistencySets(transactionPropResp);
-        if (proposalConsistencySets.size() != 1) {
-            logger.error("Expected only one set of consistent proposal responses but got {}", proposalConsistencySets.size());
-            return false;
-        }
-        logger.info("Successfully received transaction proposal responses.");
-
         // Send Transaction Transaction to orderer
         logger.info("Sending chaincode transaction to orderer.");
         channel.sendTransaction(successful).get(TRANSACTION_WAIT_TIME, TimeUnit.SECONDS);

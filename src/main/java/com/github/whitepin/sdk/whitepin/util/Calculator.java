@@ -10,7 +10,9 @@ public class Calculator {
 	 * @return
 	 */
 	public static double evalTotAvg(int sum, int amt, int ex) {
-		double result = sum / ( amt - ex );
+		double result = 0.0D;
+		if(amt - ex != 0) 
+			result = sum / ( amt - ex );
 		return result;
 	}
 	
@@ -24,7 +26,9 @@ public class Calculator {
 	 * @return
 	 */
 	public static double totAvg(int tradeTotSum, int sellAmt, int buyAmt, int sellEx, int buyEx) {
-		double result = tradeTotSum / ((sellAmt + buyAmt) - (sellEx + buyEx));
+		double result = 0.0D;
+		if(((sellAmt + buyAmt) - (sellEx + buyEx)) != 0)
+			result = tradeTotSum / ((sellAmt + buyAmt) - (sellEx + buyEx));
 		return result;
 	}
 }
