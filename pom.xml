@@ -6,7 +6,7 @@
 
   <groupId>com.github.white-pin</groupId>
   <artifactId>whitepin-sdk-java</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <packaging>jar</packaging>
 
   <name>whitepin sdk java</name>
@@ -20,7 +20,7 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
+ 
   <developers>
     <developer>
       <name>ksy11</name>
@@ -32,12 +32,7 @@
     </developer>
 
     <developer>
-      <name>yongtaelim</name>
-    </developer>
-
-    <developer>
-      <name>asprin107</name>
-      <email>asprin107@gmail.com</email>
+      <name>lyt032410@gmail.com</name>
     </developer>
 
     <developer>
@@ -60,17 +55,11 @@
   <properties>
     <java.version>1.8</java.version>
     <fabric.version>1.4.3</fabric.version>
+    <slf4j.version>1.7.25</slf4j.version>
+    <log4j.version>2.11.0</log4j.version>
   </properties>
 
   <dependencies>
-    <!-- Project Lombok 1.16.18 -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.2</version>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- jackson -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -92,11 +81,60 @@
       <version>${fabric.version}</version>
     </dependency>
 
+    <!-- logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+
+	<dependency>
+	    <groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter-api</artifactId>
+	    <version>5.3.1</version>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter-engine</artifactId>
+	    <version>5.0.1</version>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>org.junit.jupiter</groupId>
+	    <artifactId>junit-jupiter-params</artifactId>
+	    <version>5.4.2</version>
+	    <scope>test</scope>
+	</dependency>
+	
     <!-- test -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>1.2.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -39,49 +39,50 @@ import org.hyperledger.fabric_ca.sdk.HFCAClient;
 import com.github.whitepin.sdk.context.FabricUserContext;
 import com.github.whitepin.sdk.exception.FabricClientCreateException;
 
-import lombok.NoArgsConstructor;
-
 /**
- * Fabric client 및 ca client factory
+ * FabricClient Factory
  */
-@NoArgsConstructor
 public class FabricClientFactory {
 
     /**
-     * HFCAClient 인스턴스 생성
+     * Create a {@link HFCAClient} instance.
      *
-     * @param caName     : ca 이름 (e.g : ca0.testnet.com)
+     * @param caName     : name of ca (e.g : ca0.testnet.com)
      * @param protocol   : http or https
      * @param address    : ca server host
      * @param port       : ca server port
      * @param properties : properties
+     *
+     * @return A {HFCAClient} instance with given args.
      */
-    public static HFCAClient createCaClient(String caName, String protocol, String address, Integer port,
-                                            Properties properties) throws FabricClientCreateException {
+    public HFCAClient createCaClient(String caName, String protocol, String address, Integer port,
+                                     Properties properties) throws FabricClientCreateException {
 
         return createCaClient(caName, protocol + "://" + address + ":" + port, properties);
     }
 
     /**
-     * HFCAClient 인스턴스 생성 메소드
+     * Create a {@link HFCAClient} instance.
      *
-     * @param caName     : ca 이름 (e.g : ca0.testnet.com)
-     * @param caLocation : ca 주소 (http://192.168.10.11:7054)
+     * @param caName     : name of ca (e.g : ca0.testnet.com)
+     * @param caLocation : location of ca (e.g : http://192.168.10.11:7054)
+     *
+     * @return A {HFCAClient} instance with given args.
      */
-    public static HFCAClient createCaClient(String caName, String caLocation)
+    public HFCAClient createCaClient(String caName, String caLocation)
             throws FabricClientCreateException {
 
         return createCaClient(caName, caLocation, null);
     }
 
     /**
-     * HFCAClient 인스턴스 생성 메소드
+     * Create a {@link HFCAClient} instance.
      *
-     * @param caName     : ca 이름 (e.g : ca0.testnet.com)
-     * @param caLocation : ca 주소 (http://192.168.10.11:7054)
-     * @param properties : ca properties (tls 등)
+     * @param caName     : name of ca (e.g : ca0.testnet.com)
+     * @param caLocation : location of ca (e.g : http://192.168.10.11:7054)
+     * @param properties : ca properties (including tls, etc)
      */
-    public static HFCAClient createCaClient(String caName, String caLocation, Properties properties)
+    public HFCAClient createCaClient(String caName, String caLocation, Properties properties)
             throws FabricClientCreateException {
 
         CryptoSuite cryptoSuite = null;
@@ -95,8 +96,8 @@ public class FabricClientFactory {
         return createCaClient(caName, caLocation, properties, cryptoSuite);
     }
 
-    public static HFCAClient createCaClient(String caName, String caLocation, Properties properties,
-                                            CryptoSuite cryptoSuite) throws FabricClientCreateException {
+    public HFCAClient createCaClient(String caName, String caLocation, Properties properties,
+                                     CryptoSuite cryptoSuite) throws FabricClientCreateException {
 
         try {
             HFCAClient caClient = HFCAClient.createNewInstance(caName, caLocation, properties);
@@ -108,16 +109,20 @@ public class FabricClientFactory {
     }
 
     /**
-     * 기본 HFClient 생성
+     * Create a {@link HFClient} instance.
+     *
+     * @return A {@link HFClient} instance with default settings.
      */
-    public static HFClient createHFClient() throws FabricClientCreateException {
+    public HFClient createHFClient() throws FabricClientCreateException {
         return createHFClient(null);
     }
 
     /**
-     * 기본 HFClient + user context 생성
+     * Create a {@link HFClient} instance with given {@link FabricUserContext}.
+     *
+     * @return A {@link HFClient} instance with given {@link FabricUserContext}.
      */
-    public static HFClient createHFClient(FabricUserContext fabricUserContext)
+    public HFClient createHFClient(FabricUserContext fabricUserContext)
             throws FabricClientCreateException {
 
         try {

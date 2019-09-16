@@ -1,0 +1,40 @@
+# Copyright white-pin. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+OrdererOrgs:
+  - Name: orderer1
+    Domain: ordererorg1.example.com
+    Specs:
+      - Hostname: orderer1
+PeerOrgs:
+  - Name: peerorg1
+    Domain: peerorg1.example.com
+    Template:
+      Count: 2
+      Specs:
+        - Hostname: peer1
+          SANS:
+            - localhost
+            - 127.0.0.1
+        - Hostname: peer2
+          SANS:
+            - localhost
+            - 127.0.0.1
+    Users:
+      Count: 1
+  - Name: peerorg2
+    Domain: peerorg2.example.com
+    Template:
+      Count: 2
+      Specs:
+        - Hostname: peer1 # default
+          SANS:
+            - localhost
+            - 127.0.0.1
+        - Hostname: peer2 # default
+          SANS:
+            - localhost
+            - 127.0.0.1
+    Users:
+      Count: 1

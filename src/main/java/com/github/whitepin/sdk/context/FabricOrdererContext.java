@@ -19,25 +19,22 @@ package com.github.whitepin.sdk.context;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
- * Fabric orderer 노드 context
+ * Fabric orderer node context
  */
-@Getter
-@Setter
-@NoArgsConstructor
 public class FabricOrdererContext {
 
-    private String name;            // orderer 이름
-    private String location;        // orderer 주소 e.g) grpc://localhost:7050
+    private String name;            // name of orderer
+    private String location;        // location of orderer e.g) grpc://localhost:7050
     private Properties properties;  // orderer properties
 
+    public static FabricOrdererContextBuilder builder() {
+        return new FabricOrdererContextBuilder();
+    }
+
     /**
-     * Orderer grpc 통신 관련 기본 값 설정
+     * Adds orderer's default grpc settings if not exist.
+     *
      * - grpc.NettyChannelBuilderOption.keepAliveTime={ 5L, TimeUnit.MINUTES }
      * - grpc.NettyChannelBuilderOption.keepAliveTimeout={ 8L, TimeUnit.SECONDS }
      * - grpc.NettyChannelBuilderOption.keepAliveWithoutCalls={ true }
@@ -62,10 +59,71 @@ public class FabricOrdererContext {
         return properties;
     }
 
-    @Builder
+    public FabricOrdererContext() {
+    }
+
     public FabricOrdererContext(String name, String location, Properties properties) {
         this.name = name;
         this.location = location;
         this.properties = properties;
     }
+
+    // getters, setters, builder
+    public String getName() {
+        return this.name;
+    }
+
+    public String getLocation() {
+        return this.location;
+    }
+
+    public Properties getProperties() {
+        return this.properties;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    public static class FabricOrdererContextBuilder {
+        private String name;
+        private String location;
+        private Properties properties;
+
+        FabricOrdererContextBuilder() {
+        }
+
+        public FabricOrdererContext.FabricOrdererContextBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public FabricOrdererContext.FabricOrdererContextBuilder location(String location) {
+            this.location = location;
+            return this;
+        }
+
+        public FabricOrdererContext.FabricOrdererContextBuilder properties(Properties properties) {
+            this.properties = properties;
+            return this;
+        }
+
+        public FabricOrdererContext build() {
+            return new FabricOrdererContext(this.name, this.location, this.properties);
+        }
+
+        public String toString() {
+            return "FabricOrdererContext.FabricOrdererContextBuilder(name=" + this.name + ", location="
+                   + this.location + ", properties=" + this.properties + ")";
+        }
+    }
+
 }
