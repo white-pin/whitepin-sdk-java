@@ -49,6 +49,7 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
     public ChaincodeInvocationImpl() {
         this.chaincodeID = ChaincodeID.newBuilder().setName(CHAINCODE_NAME).build();
         this.objectMapper = new ObjectMapper();
+        this.fabricChaincodeClient = new FabricChaincodeClient();
     }
 
     @Override
