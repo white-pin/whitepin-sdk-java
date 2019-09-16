@@ -18,19 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FabricChaincodeClient {
+	
 	private int TRANSACTION_WAIT_TIME = 20000;
-	 
-	private Channel channel;
-	private HFClient client;
+	private Logger logger = LoggerFactory.getLogger(FabricChaincodeClient.class);
 	
-	public Logger logger = LoggerFactory.getLogger(FabricChaincodeClient.class);
-	
-	public FabricChaincodeClient(Channel channel, HFClient client) {
-		this.channel = channel; 
-		this.client = client;
-	}
-	
-	public String query(String fcn, ChaincodeID chaincodeID, String...args) throws Exception {
+	public String query(Channel channel, HFClient client, String fcn, ChaincodeID chaincodeID, String...args) throws Exception {
 		String payload = "";
 		
 		QueryByChaincodeRequest queryByChaincodeRequest = client.newQueryProposalRequest();
@@ -51,7 +43,7 @@ public class FabricChaincodeClient {
 		return payload;
 	}
 	
-	public boolean invoke(String fcn, ChaincodeID chaincodeID, Type chaincodeLanguage, String...args) throws Exception {
+	public boolean invoke(Channel channel, HFClient client, String fcn, ChaincodeID chaincodeID, Type chaincodeLanguage, String...args) throws Exception {
 		List<ProposalResponse> successful = new ArrayList<ProposalResponse>();
 		List<ProposalResponse> failed = new ArrayList<ProposalResponse>();
 		
