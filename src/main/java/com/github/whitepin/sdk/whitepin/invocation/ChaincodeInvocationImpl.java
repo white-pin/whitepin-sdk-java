@@ -112,20 +112,20 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         TradeSum tradeSum = userVo.getTradeSum();
         double tradeTotAvg = Calculator.totAvg(tradeSum.getTotSum(), userVo.getSellAmt(), userVo.getBuyAmt(),
                 userVo.getSellEx(), userVo.getBuyEx());
-        buyAvg.setTotAvg(tradeTotAvg);
+        tradeAvg.setTotAvg(tradeTotAvg);
 
         double tradeEvalAvg1 =
                 Calculator.totAvg(tradeSum.getEvalSum01(), userVo.getSellAmt(), userVo.getBuyAmt(),
                         userVo.getSellEx(), userVo.getBuyEx());
-        buyAvg.setEvalAvg1(tradeEvalAvg1);
+        tradeAvg.setEvalAvg1(tradeEvalAvg1);
         double tradeEvalAvg2 =
                 Calculator.totAvg(tradeSum.getEvalSum02(), userVo.getSellAmt(), userVo.getBuyAmt(),
                         userVo.getSellEx(), userVo.getBuyEx());
-        buyAvg.setEvalAvg2(tradeEvalAvg2);
+        tradeAvg.setEvalAvg2(tradeEvalAvg2);
         double tradeEvalAvg3 =
                 Calculator.totAvg(tradeSum.getEvalSum03(), userVo.getSellAmt(), userVo.getBuyAmt(),
                         userVo.getSellEx(), userVo.getBuyEx());
-        buyAvg.setEvalAvg3(tradeEvalAvg3);
+        tradeAvg.setEvalAvg3(tradeEvalAvg3);
         userVo.setTradeAvg(tradeAvg);
 
         return userVo;
@@ -183,20 +183,20 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         TradeSum tradeSum = userVo.getTradeSum();
         double tradeTotAvg = Calculator.totAvg(tradeSum.getTotSum(), userVo.getSellAmt(), userVo.getBuyAmt(),
                 userVo.getSellEx(), userVo.getBuyEx());
-        buyAvg.setTotAvg(tradeTotAvg);
+        tradeAvg.setTotAvg(tradeTotAvg);
 
         double tradeEvalAvg1 =
                 Calculator.totAvg(tradeSum.getEvalSum01(), userVo.getSellAmt(), userVo.getBuyAmt(),
                         userVo.getSellEx(), userVo.getBuyEx());
-        buyAvg.setEvalAvg1(tradeEvalAvg1);
+        tradeAvg.setEvalAvg1(tradeEvalAvg1);
         double tradeEvalAvg2 =
                 Calculator.totAvg(tradeSum.getEvalSum02(), userVo.getSellAmt(), userVo.getBuyAmt(),
                         userVo.getSellEx(), userVo.getBuyEx());
-        buyAvg.setEvalAvg2(tradeEvalAvg2);
+        tradeAvg.setEvalAvg2(tradeEvalAvg2);
         double tradeEvalAvg3 =
                 Calculator.totAvg(tradeSum.getEvalSum03(), userVo.getSellAmt(), userVo.getBuyAmt(),
                         userVo.getSellEx(), userVo.getBuyEx());
-        buyAvg.setEvalAvg3(tradeEvalAvg3);
+        tradeAvg.setEvalAvg3(tradeEvalAvg3);
         userVo.setTradeAvg(tradeAvg);
 
         return userVo;
