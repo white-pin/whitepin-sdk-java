@@ -46,8 +46,8 @@ public class FabricContruct {
     private final String ordererLocation = "grpc://192.168.7.30:7050";
     private final String peerName1 = "peer0.peerorg1.testnet.com";
     private final String peerLocation1 = "grpc://192.168.7.30:7051";
-    private final String peerName2 = "peer1.peerorg1.testnet.com";
-    private final String peerLocation2 = "grpc://192.168.7.31:7051";
+//    private final String peerName2 = "peer1.peerorg1.testnet.com";
+//    private final String peerLocation2 = "grpc://192.168.7.31:7051";
 
     private final String channelName = "ch1";
 
@@ -95,13 +95,14 @@ public class FabricContruct {
         fabricPeerContextBuilder1.properties(null);
         FabricPeerContext peerContext1 = fabricPeerContextBuilder1.build();
 
-        FabricPeerContextBuilder fabricPeerContextBuilder2 = FabricPeerContext.builder();
-        fabricPeerContextBuilder2.name(peerName2);
-        fabricPeerContextBuilder2.location(peerLocation2);
-        fabricPeerContextBuilder2.properties(null);
-        FabricPeerContext peerContext2 = fabricPeerContextBuilder2.build();
+//        FabricPeerContextBuilder fabricPeerContextBuilder2 = FabricPeerContext.builder();
+//        fabricPeerContextBuilder2.name(peerName2);
+//        fabricPeerContextBuilder2.location(peerLocation2);
+//        fabricPeerContextBuilder2.properties(null);
+//        FabricPeerContext peerContext2 = fabricPeerContextBuilder2.build();
 
-        return Arrays.asList(peerContext1, peerContext2);
+//        return Arrays.asList(peerContext1, peerContext2);
+        return Arrays.asList(peerContext1);
     }
 
     public Channel getChannel() {

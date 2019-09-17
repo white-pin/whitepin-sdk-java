@@ -1,5 +1,7 @@
 package com.github.whitepin.sdk.whitepin.invocation;
 
+import java.util.List;
+
 import org.hyperledger.fabric.sdk.Channel;
 import org.hyperledger.fabric.sdk.HFClient;
 
@@ -20,9 +22,16 @@ public interface ChaincodeInvocation {
 
     /**
      * 사용자 조회
+     * FN02
      * @param userTkn :: 사용자 토큰
      */
     public UserVo queryUser(Channel channel, HFClient client, String userTkn) throws Exception;
+
+    /**
+     * 사용자 조회 ( 누적 거래 내역 조회 )
+     * FN01
+     */
+    public UserVo queryTotalUser(Channel channel, HFClient client) throws Exception;
 
     /**
      * 거래 생성 
@@ -40,7 +49,7 @@ public interface ChaincodeInvocation {
      * @return
      * @throws Exception
      */
-    public TradeVo queryTradeWithQueryString(Channel channel, HFClient client, String queryString)
+    public List<TradeVo> queryTradeWithQueryString(Channel channel, HFClient client, String queryString)
             throws Exception;
 
     /**
@@ -55,13 +64,28 @@ public interface ChaincodeInvocation {
      * @return
      * @throws Exception
      */
-    public TradeVo queryTradeWithUser(Channel channel, HFClient client, String userTkn,
-            ConditionType conditionType,
-            OrderType orderType, ReportType reportType,
-            String pageSize, String pageNum, String bookmark) throws Exception;
+    public List<TradeVo> queryTradeWithUser(Channel channel, HFClient client, String userTkn,
+            ConditionType conditionType, OrderType orderType, ReportType reportType, String pageSize,
+            String pageNum, String bookmark) throws Exception;
 
     /**
-     * 거래 조회 (사용자 토큰, 서비스 코드로 조회)
+     * 사용자로 거래이력 조회.
+     * FN03
+     * @param userTkn      :: 사용자 정보
+     * @param condition    :: 사용자의 조건 (판매 : "sell", 구매 : "buy", 둘다 : "all")
+     * @param ordering     :: 시간에 대한 ordering. (default is desc.)
+     * @param pageSize     :: (optional) : 한 페이지 사이즈
+     * @param pageNum      :: (optional) : 페이지 번호
+     * @param bookmark     :: (optional) : 북마크 (첫 페이지 조회 또는 default는 "")
+     * @return
+     * @throws Exception
+     */
+    public List<TradeVo> queryTradeWithUser(Channel channel, HFClient client, String userTkn,
+            ConditionType conditionType, OrderType orderType, String pageSize, String pageNum, String bookmark)
+            throws Exception;
+
+    /**
+     * // 사용자, 서비스 코드로 거래이력 조회. (판매, 구매, 모두 : sell, buy, all)
      * @param userTkn      :: 사용자 정보
      * @param serviceCode  :: 서비스 코드
      * @param condition    :: 사용자의 조건 (판매 : "sell", 구매 : "buy", 둘다 : "all")
@@ -73,7 +97,8 @@ public interface ChaincodeInvocation {
      * @return
      * @throws Exception
      */
-    public TradeVo queryTradeUserService(Channel channel, HFClient client, String userTkn, String serviceCode,
+    public List<TradeVo> queryTradeWithUserService(Channel channel, HFClient client, String userTkn,
+            String serviceCode,
             ConditionType conditionType, OrderType orderType,
             ReportType reportType, String pageSize, String pageNum, String bookmark) throws Exception;
 
@@ -88,18 +113,15 @@ public interface ChaincodeInvocation {
      * @return
      * @throws Exception
      */
-    public TradeVo queryTradeService(Channel channel, HFClient client, String serviceCode, OrderType orderType,
+    public List<TradeVo> queryTradeWithService(Channel channel, HFClient client, String serviceCode,
+            OrderType orderType,
             ReportType reportType, String pageSize, String pageNum, String bookmark) throws Exception;
 
     /**
      * 거래 조회
      * @param tradeId     :: 거래 ID
-     * @param serviceCode :: 서비스 Code ( 000000 : airbnb, 000001 : carrotmarket, .... )
-     * @param sellerTkn   :: 판매자 토큰
-     * @param buyerTkn    :: 구매자 토큰
      */
-    public TradeVo queryTradeWithId(Channel channel, HFClient client, String tradeId, String serviceCode,
-            String sellerTkn, String buyerTkn) throws Exception;
+    public TradeVo queryTradeWithId(Channel channel, HFClient client, String tradeId) throws Exception;
 
     /**
      * 임시 평가정수 조회
@@ -109,13 +131,14 @@ public interface ChaincodeInvocation {
 
     /**
      * 임시평가점수 조회 query 작성 후 추가
-     * @param queryString :: 거래 조회 조건에 맞는 query string
+     * @param tradeId     :: 거래 ID
      */
-    public TradeVo queryScoreTempWithTradeId(Channel channel, HFClient client, String queryString)
+    public ScoreVo queryScoreTempWithTradeId(Channel channel, HFClient client, String tradeId)
             throws Exception;
 
     /**
      * 거래 완료 처리 (판매자 또는 구마재)
+     * FN05
      * @param tradeId     :: 거래 ID
      * @param userTkn     :: 사용자 토큰
      */
@@ -125,19 +148,22 @@ public interface ChaincodeInvocation {
     /**
      * 임시 평가점수 등록 (판매자 또는 구마재)
      * @param tradeId     :: 거래 ID
+     * @param userTkn     :: 사용자 토큰
      * @param scoreOrigin :: 평가 점수 e.g.) "[3,4,5]" 의 format
-     * @param division    :: "sell" or "buy"
      * @param key         :: encryption에 사용될 string
      */
-    public boolean enrollTempScore(Channel channel, HFClient client, String tradeId, String scoreOrigin,
-            String division, String key) throws Exception;
+    public boolean enrollTempScore(Channel channel, HFClient client, String tradeId, String userTkn,
+            String scoreOrigin, String key) throws Exception;
 
     /**
-     * 임시 평가점수 조회 (query string 사용)
+     * 임시 평가점수 등록 (판매자 또는 구마재)
+     * FN04
      * @param tradeId     :: 거래 ID
+     * @param scoreOrigin :: 평가 점수 e.g.) "[3,4,5]" 의 format
+     * @param division    :: "sell" or "buy"
      */
-    public ScoreVo queryTempScoreWithCondition(Channel channel, HFClient client, String tradeId)
-            throws Exception;
+    public boolean enrollTempScore(Channel channel, HFClient client, String tradeId, String scoreOrigin,
+            String userTkn) throws Exception;
 
     /**
      * 거래 점수 등록 (판매자, 구매자 동시에)
