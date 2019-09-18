@@ -73,7 +73,7 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         SellAvg sellAvg = new SellAvg();
         SellSum sellSum = userVo.getSellSum();
         double sellTotAvg = Calculator.evalTotAvg(sellSum.getTotSum(), userVo.getSellAmt(), userVo.getSellEx());
-        sellAvg.setTotAvg(sellTotAvg);
+        sellAvg.setTotAvg(sellTotAvg / 3);
 
         double sellEvalAvg1 =
                 Calculator.evalTotAvg(sellSum.getEvalSum01(), userVo.getSellAmt(), userVo.getSellEx());
@@ -92,7 +92,7 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         BuyAvg buyAvg = new BuyAvg();
         BuySum buySum = userVo.getBuySum();
         double buyTotAvg = Calculator.evalTotAvg(buySum.getTotSum(), userVo.getBuyAmt(), userVo.getBuyEx());
-        buyAvg.setTotAvg(buyTotAvg);
+        buyAvg.setTotAvg(buyTotAvg / 3);
 
         double buyEvalAvg1 =
                 Calculator.evalTotAvg(buySum.getEvalSum01(), userVo.getBuyAmt(), userVo.getBuyEx());
@@ -112,7 +112,7 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         TradeSum tradeSum = userVo.getTradeSum();
         double tradeTotAvg = Calculator.totAvg(tradeSum.getTotSum(), userVo.getSellAmt(), userVo.getBuyAmt(),
                 userVo.getSellEx(), userVo.getBuyEx());
-        tradeAvg.setTotAvg(tradeTotAvg);
+        tradeAvg.setTotAvg(tradeTotAvg / 3);
 
         double tradeEvalAvg1 =
                 Calculator.totAvg(tradeSum.getEvalSum01(), userVo.getSellAmt(), userVo.getBuyAmt(),
@@ -144,7 +144,7 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         SellAvg sellAvg = new SellAvg();
         SellSum sellSum = userVo.getSellSum();
         double sellTotAvg = Calculator.evalTotAvg(sellSum.getTotSum(), userVo.getSellAmt(), userVo.getSellEx());
-        sellAvg.setTotAvg(sellTotAvg);
+        sellAvg.setTotAvg(sellTotAvg / 3);
 
         double sellEvalAvg1 =
                 Calculator.evalTotAvg(sellSum.getEvalSum01(), userVo.getSellAmt(), userVo.getSellEx());
@@ -163,7 +163,7 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         BuyAvg buyAvg = new BuyAvg();
         BuySum buySum = userVo.getBuySum();
         double buyTotAvg = Calculator.evalTotAvg(buySum.getTotSum(), userVo.getBuyAmt(), userVo.getBuyEx());
-        buyAvg.setTotAvg(buyTotAvg);
+        buyAvg.setTotAvg(buyTotAvg / 3);
 
         double buyEvalAvg1 =
                 Calculator.evalTotAvg(buySum.getEvalSum01(), userVo.getBuyAmt(), userVo.getBuyEx());
@@ -183,7 +183,7 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         TradeSum tradeSum = userVo.getTradeSum();
         double tradeTotAvg = Calculator.totAvg(tradeSum.getTotSum(), userVo.getSellAmt(), userVo.getBuyAmt(),
                 userVo.getSellEx(), userVo.getBuyEx());
-        tradeAvg.setTotAvg(tradeTotAvg);
+        tradeAvg.setTotAvg(tradeTotAvg / 3);
 
         double tradeEvalAvg1 =
                 Calculator.totAvg(tradeSum.getEvalSum01(), userVo.getSellAmt(), userVo.getBuyAmt(),

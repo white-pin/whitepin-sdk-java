@@ -12,12 +12,12 @@ public class Calculator {
     public static double evalTotAvg(int sum, int amt, int ex) {
         double result = 0.0D;
         if (amt - ex != 0)
-            result = sum / (amt - ex);
+            result = (double) sum / (amt - ex);
         return result;
     }
 
     /**
-     * total 평균 
+     * total 평균
      * @param tradeTotSum  :: 거래 total 합
      * @param sellAmt      :: 판매 총 판매량
      * @param buyAmt       :: 구매 총 판매량
@@ -28,7 +28,7 @@ public class Calculator {
     public static double totAvg(int tradeTotSum, int sellAmt, int buyAmt, int sellEx, int buyEx) {
         double result = 0.0D;
         if (((sellAmt + buyAmt) - (sellEx + buyEx)) != 0)
-            result = tradeTotSum / ((sellAmt + buyAmt) - (sellEx + buyEx));
+            result = (double) tradeTotSum / ((sellAmt + buyAmt) - (sellEx + buyEx));
         return result;
     }
 }
