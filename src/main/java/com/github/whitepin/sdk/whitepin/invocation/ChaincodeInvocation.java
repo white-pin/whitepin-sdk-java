@@ -160,7 +160,7 @@ public interface ChaincodeInvocation {
      * FN04
      * @param tradeId     :: 거래 ID
      * @param scoreOrigin :: 평가 점수 e.g.) "[3,4,5]" 의 format
-     * @param division    :: "sell" or "buy"
+     * @param userTkn     :: 사용자 토큰
      */
     public boolean enrollTempScore(Channel channel, HFClient client, String tradeId, String scoreOrigin,
             String userTkn) throws Exception;
