@@ -10,6 +10,7 @@ import org.hyperledger.fabric.sdk.HFClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -183,6 +184,12 @@ public class FabricChaincodeInvocationIT {
     void queryScoreTempWithTradeIdTest(String tradeId) throws Exception {
         ScoreVo scoreVo = chaincodeInvocation.queryScoreTempWithTradeId(channel, client, tradeId);
         assertThat(scoreVo.getTradeId()).isEqualTo("AB01");
+    }
+
+    @Test
+    void queryScoreTempWithExpired() throws Exception {
+        List<ScoreVo> scores = chaincodeInvocation.queryScoreTempWithExpired(channel, client);
+        System.out.println(scores.size());
     }
 
     @ParameterizedTest

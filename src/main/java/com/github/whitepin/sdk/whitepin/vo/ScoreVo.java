@@ -3,7 +3,6 @@ package com.github.whitepin.sdk.whitepin.vo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ScoreVo {
-
     // 데이터 셋의 성격을 구분하는 ID (ScoreTemp는 3)
     @JsonProperty("RecType")
     private int recType;
@@ -24,13 +23,17 @@ public class ScoreVo {
      */
     @JsonProperty("ExpiryDate")
     private String expiryDate;
-    
+
     @JsonProperty("UserTkn")
     private String userTkn;
 
     // 거래에 대한 상호 평가 점수.
     @JsonProperty("Score")
     private Score score;
+
+    // 임시 점수 유효기간 만료 여부
+    @JsonProperty("IsExpired")
+    private boolean isExpired;
 
     public int getRecType() {
         return recType;
@@ -51,9 +54,13 @@ public class ScoreVo {
     public String getUserTkn() {
         return userTkn;
     }
-    
+
     public Score getScore() {
         return score;
+    }
+
+    public boolean isExpired() {
+        return isExpired;
     }
 
     public class Score {

@@ -18,20 +18,20 @@ public interface ChaincodeInvocation {
      * @param userTkn :: 사용자 토큰
      * @return
      */
-    public boolean addUser(Channel channel, HFClient client, String userTkn) throws Exception;
+    boolean addUser(Channel channel, HFClient client, String userTkn) throws Exception;
 
     /**
      * 사용자 조회
      * FN02
      * @param userTkn :: 사용자 토큰
      */
-    public UserVo queryUser(Channel channel, HFClient client, String userTkn) throws Exception;
+    UserVo queryUser(Channel channel, HFClient client, String userTkn) throws Exception;
 
     /**
      * 사용자 조회 ( 누적 거래 내역 조회 )
      * FN01
      */
-    public UserVo queryTotalUser(Channel channel, HFClient client) throws Exception;
+    UserVo queryTotalUser(Channel channel, HFClient client) throws Exception;
 
     /**
      * 거래 생성 
@@ -40,8 +40,8 @@ public interface ChaincodeInvocation {
      * @param sellerTkn   :: 판매자 토큰
      * @param buyerTkn    :: 구매자 토큰
      */
-    public boolean createTrade(Channel channel, HFClient client, String tradeId, String serviceCode,
-            String sellerTkn, String buyerTkn) throws Exception;
+    boolean createTrade(Channel channel, HFClient client, String tradeId, String serviceCode,
+                        String sellerTkn, String buyerTkn) throws Exception;
 
     /**
      * queryString으로 거래이력 조회.
@@ -49,7 +49,7 @@ public interface ChaincodeInvocation {
      * @return
      * @throws Exception
      */
-    public List<TradeVo> queryTradeWithQueryString(Channel channel, HFClient client, String queryString)
+    List<TradeVo> queryTradeWithQueryString(Channel channel, HFClient client, String queryString)
             throws Exception;
 
     /**
@@ -64,9 +64,10 @@ public interface ChaincodeInvocation {
      * @return
      * @throws Exception
      */
-    public List<TradeVo> queryTradeWithUser(Channel channel, HFClient client, String userTkn,
-            ConditionType conditionType, OrderType orderType, ReportType reportType, String pageSize,
-            String pageNum, String bookmark) throws Exception;
+    List<TradeVo> queryTradeWithUser(Channel channel, HFClient client, String userTkn,
+                                     ConditionType conditionType, OrderType orderType,
+                                     ReportType reportType, String pageSize,
+                                     String pageNum, String bookmark) throws Exception;
 
     /**
      * 사용자로 거래이력 조회.
@@ -80,8 +81,9 @@ public interface ChaincodeInvocation {
      * @return
      * @throws Exception
      */
-    public List<TradeVo> queryTradeWithUser(Channel channel, HFClient client, String userTkn,
-            ConditionType conditionType, OrderType orderType, String pageSize, String pageNum, String bookmark)
+    List<TradeVo> queryTradeWithUser(Channel channel, HFClient client, String userTkn,
+                                     ConditionType conditionType, OrderType orderType, String pageSize,
+                                     String pageNum, String bookmark)
             throws Exception;
 
     /**
@@ -97,10 +99,11 @@ public interface ChaincodeInvocation {
      * @return
      * @throws Exception
      */
-    public List<TradeVo> queryTradeWithUserService(Channel channel, HFClient client, String userTkn,
-            String serviceCode,
-            ConditionType conditionType, OrderType orderType,
-            ReportType reportType, String pageSize, String pageNum, String bookmark) throws Exception;
+    List<TradeVo> queryTradeWithUserService(Channel channel, HFClient client, String userTkn,
+                                            String serviceCode,
+                                            ConditionType conditionType, OrderType orderType,
+                                            ReportType reportType, String pageSize, String pageNum,
+                                            String bookmark) throws Exception;
 
     /**
      * 거래 조회 (서비스 코드로 조회)
@@ -113,28 +116,35 @@ public interface ChaincodeInvocation {
      * @return
      * @throws Exception
      */
-    public List<TradeVo> queryTradeWithService(Channel channel, HFClient client, String serviceCode,
-            OrderType orderType,
-            ReportType reportType, String pageSize, String pageNum, String bookmark) throws Exception;
+    List<TradeVo> queryTradeWithService(Channel channel, HFClient client, String serviceCode,
+                                        OrderType orderType,
+                                        ReportType reportType, String pageSize, String pageNum,
+                                        String bookmark) throws Exception;
 
     /**
      * 거래 조회
      * @param tradeId     :: 거래 ID
      */
-    public TradeVo queryTradeWithId(Channel channel, HFClient client, String tradeId) throws Exception;
+    TradeVo queryTradeWithId(Channel channel, HFClient client, String tradeId) throws Exception;
 
     /**
      * 임시 평가정수 조회
      * @param scoreKey    :: 평가 키
      */
-    public ScoreVo queryScoreTemp(Channel channel, HFClient client, String scoreKey) throws Exception;
+    ScoreVo queryScoreTemp(Channel channel, HFClient client, String scoreKey) throws Exception;
 
     /**
      * 임시평가점수 조회 query 작성 후 추가
      * @param tradeId     :: 거래 ID
      */
-    public ScoreVo queryScoreTempWithTradeId(Channel channel, HFClient client, String tradeId)
+    ScoreVo queryScoreTempWithTradeId(Channel channel, HFClient client, String tradeId)
             throws Exception;
+
+    /**
+     * 유효 기간이 지난 임시평가점수 조회 query
+     * @return
+     */
+    List<ScoreVo> queryScoreTempWithExpired(Channel channel, HFClient client) throws Exception;
 
     /**
      * 거래 완료 처리 (판매자 또는 구마재)
@@ -142,7 +152,7 @@ public interface ChaincodeInvocation {
      * @param tradeId     :: 거래 ID
      * @param userTkn     :: 사용자 토큰
      */
-    public boolean closeTrade(Channel channel, HFClient client, String tradeId, String userTkn)
+    boolean closeTrade(Channel channel, HFClient client, String tradeId, String userTkn)
             throws Exception;
 
     /**
@@ -152,8 +162,8 @@ public interface ChaincodeInvocation {
      * @param scoreOrigin :: 평가 점수 e.g.) "[3,4,5]" 의 format
      * @param key         :: encryption에 사용될 string
      */
-    public boolean enrollTempScore(Channel channel, HFClient client, String tradeId, String userTkn,
-            String scoreOrigin, String key) throws Exception;
+    boolean enrollTempScore(Channel channel, HFClient client, String tradeId, String userTkn,
+                            String scoreOrigin, String key) throws Exception;
 
     /**
      * 임시 평가점수 등록 (판매자 또는 구마재)
@@ -162,13 +172,13 @@ public interface ChaincodeInvocation {
      * @param scoreOrigin :: 평가 점수 e.g.) "[3,4,5]" 의 format
      * @param userTkn     :: 사용자 토큰
      */
-    public boolean enrollTempScore(Channel channel, HFClient client, String tradeId, String scoreOrigin,
-            String userTkn) throws Exception;
+    boolean enrollTempScore(Channel channel, HFClient client, String tradeId, String scoreOrigin,
+                            String userTkn) throws Exception;
 
     /**
      * 거래 점수 등록 (판매자, 구매자 동시에)
      * @param tradeId     :: 거래 ID
      * @param key         :: 암호화 해제 키
      */
-    public boolean enrollScore(Channel channel, HFClient client, String tradeId, String key) throws Exception;
+    boolean enrollScore(Channel channel, HFClient client, String tradeId, String key) throws Exception;
 }

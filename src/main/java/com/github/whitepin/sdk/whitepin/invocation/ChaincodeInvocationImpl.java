@@ -33,19 +33,21 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
     private String CHAINCODE_NAME = "whitepin";
     private Type CHAINCODE_LANG = Type.GO_LANG;
 
-    private String ADD_USER = "addUser";
-    private String QUERY_USER = "queryUser";
-    private String CREATE_TRADE = "createTrade";
-    private String QUERY_TRADE_WITH_QUERY_STRING = "queryTradeWithQueryString";
-    private String QUERY_TRADE_WITH_USER = "queryTradeWithUser";
-    private String QUERY_TRADE_WITH_USER_SERVICE = "queryTradeWithUserService";
-    private String QUERY_TRADE_WITH_SERVICE = "queryTradeWithService";
-    private String QUERY_TRADE_WITH_ID = "queryTradeWithId";
-    private String QUERY_SCORE_TEMP = "queryScoreTemp";
-    private String QUERY_SCORE_TEMP_WITH_TRADE_ID = "queryScoreTempWithTradeId";
-    private String CLOSE_TRADE = "closeTrade";
-    private String ENROLL_TEMP_SCORE = "enrollTempScore";
-    private String ENROLL_SCORE = "enrollScore";
+    private final String[] EMPTY_ARGS = new String[]{};
+    private final String ADD_USER = "addUser";
+    private final String QUERY_USER = "queryUser";
+    private final String CREATE_TRADE = "createTrade";
+    private final String QUERY_TRADE_WITH_QUERY_STRING = "queryTradeWithQueryString";
+    private final String QUERY_TRADE_WITH_USER = "queryTradeWithUser";
+    private final String QUERY_TRADE_WITH_USER_SERVICE = "queryTradeWithUserService";
+    private final String QUERY_TRADE_WITH_SERVICE = "queryTradeWithService";
+    private final String QUERY_TRADE_WITH_ID = "queryTradeWithId";
+    private final String QUERY_SCORE_TEMP = "queryScoreTemp";
+    private final String QUERY_SCORE_TEMP_WITH_TRADE_ID = "queryScoreTempWithTradeId";
+    private final String QUERY_SCORE_TEMP_WITH_EXPIRED = "getNotSyncScoreTemp";
+    private final String CLOSE_TRADE = "closeTrade";
+    private final String ENROLL_TEMP_SCORE = "enrollTempScore";
+    private final String ENROLL_SCORE = "enrollScore";
     ////////
 
     public ChaincodeInvocationImpl() {
@@ -297,6 +299,14 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
     }
 
     @Override
+    public List<ScoreVo> queryScoreTempWithExpired(Channel channel, HFClient client) throws Exception {
+        String result = fabricChaincodeClient.query(channel, client, QUERY_SCORE_TEMP_WITH_EXPIRED,
+                                                    chaincodeID, EMPTY_ARGS);
+
+        return objectMapper.readValue(result, new TypeReference<List<ScoreVo>>() {});
+    }
+
+    @Override
     public boolean closeTrade(Channel channel, HFClient client, String tradeId, String userTkn)
             throws Exception {
         boolean result = fabricChaincodeClient.invoke(channel, client, CLOSE_TRADE, chaincodeID, CHAINCODE_LANG,
@@ -327,7 +337,7 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         boolean result =
                 fabricChaincodeClient.invoke(channel, client, ENROLL_SCORE, chaincodeID, CHAINCODE_LANG,
                         new String[] { tradeId, key });
+
         return result;
     }
-
 }
