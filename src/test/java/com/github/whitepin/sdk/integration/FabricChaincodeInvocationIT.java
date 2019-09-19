@@ -53,7 +53,7 @@ public class FabricChaincodeInvocationIT {
     }
 
     @ParameterizedTest
-    @Disabled
+//    @Disabled
     @DisplayName("사용자 조회 테스트")
     @ValueSource(strings = { "BB" })
     void queryUserTest(String userTkn) throws Exception {
@@ -206,7 +206,7 @@ public class FabricChaincodeInvocationIT {
     }
     
     @ParameterizedTest
-//    @Disabled
+    @Disabled
     @DisplayName("판매자 또는 구매자 점수 등록 테스트 - key 값 고정")
     @CsvSource(value = { "AB01,BB" })
     void enrollTempScoreTest(String tradeId, String userTkn) throws Exception {

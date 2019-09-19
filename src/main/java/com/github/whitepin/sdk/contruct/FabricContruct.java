@@ -144,7 +144,7 @@ public class FabricContruct {
 		this.userName = "Admin@Whitepin";
 		this.userPassword = "WhitepinPWD";
 		
-		this.orgMsp = "Whitepin";
+		this.orgMsp = "WhitepinMSP";
 		
 		this.ordererName = "orderer0.whitepin.com";
 		this.ordererLocation = "grpc://192.168.7.30:7050";
@@ -168,7 +168,7 @@ public class FabricContruct {
 		Enrollment enroll = caClient.enroll(userName, userPassword);
 
 		FabricUserContext fabricUserContext = new FabricUserContext();
-		fabricUserContext.setAffiliation("peerorg1");
+		fabricUserContext.setAffiliation(orgMsp);
 		fabricUserContext.setEnrollment(enroll);
 		fabricUserContext.setAdmin(true);
 		fabricUserContext.setMspId(orgMsp);
