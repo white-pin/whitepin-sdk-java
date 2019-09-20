@@ -37,7 +37,7 @@ public class FabricChaincodeClient {
 				logger.error("function :: {}, args :: {}, verified :: {}, status :: {}", fcn, args, proposalResponse.isVerified(), proposalResponse.getStatus());
             } else {
                 payload = proposalResponse.getProposalResponse().getResponse().getPayload().toStringUtf8();
-                logger.info("Query payload of b from peer %s returned %s", proposalResponse.getPeer().getName(), payload);
+                logger.info("Query payload of b from peer {} returned {}", proposalResponse.getPeer().getName(), payload);
             }
 		}
 		return payload;

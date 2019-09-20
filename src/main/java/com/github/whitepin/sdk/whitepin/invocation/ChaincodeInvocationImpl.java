@@ -1,10 +1,13 @@
 package com.github.whitepin.sdk.whitepin.invocation;
 
+import java.util.List;
+
 import org.hyperledger.fabric.sdk.ChaincodeID;
 import org.hyperledger.fabric.sdk.Channel;
 import org.hyperledger.fabric.sdk.HFClient;
 import org.hyperledger.fabric.sdk.TransactionRequest.Type;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.whitepin.sdk.client.FabricChaincodeClient;
 import com.github.whitepin.sdk.whitepin.context.ConditionType;
@@ -30,25 +33,27 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
     private String CHAINCODE_NAME = "whitepin";
     private Type CHAINCODE_LANG = Type.GO_LANG;
 
-    private String ADD_USER = "addUser";
-    private String QUERY_USER = "queryUser";
-    private String CREATE_TRADE = "createTrade";
-    private String QUERY_TRADE_WITH_QUERY_STRING = "queryTradeWithQueryString";
-    private String QUERY_TRADE_WITH_USER = "queryTradeWithUser";
-    private String QUERY_TRADE_USER_SERVICE = "queryTradeUserService";
-    private String QUERY_TRADE_SERVICE = "queryTradeService";
-    private String QUERY_TRADE_WITH_ID = "queryTradeWithId";
-    private String QUERY_SCORE_TEMP = "queryScoreTemp";
-    private String QUERY_SCORE_TEMP_WITH_TRADE_ID = "queryScoreTempWithTradeId";
-    private String CLOSE_TRADE = "closeTrade";
-    private String ENROLL_TEMP_SCORE = "enrollTempScore";
-    private String QUERY_TEMP_SCORE_WITH_CONDITION = "queryTempScoreWithCondition";
-    private String ENROLL_SCORE = "enrollScore";
+    private final String[] EMPTY_ARGS = new String[] { "" };
+    private final String ADD_USER = "addUser";
+    private final String QUERY_USER = "queryUser";
+    private final String CREATE_TRADE = "createTrade";
+    private final String QUERY_TRADE_WITH_QUERY_STRING = "queryTradeWithQueryString";
+    private final String QUERY_TRADE_WITH_USER = "queryTradeWithUser";
+    private final String QUERY_TRADE_WITH_USER_SERVICE = "queryTradeWithUserService";
+    private final String QUERY_TRADE_WITH_SERVICE = "queryTradeWithService";
+    private final String QUERY_TRADE_WITH_ID = "queryTradeWithId";
+    private final String QUERY_SCORE_TEMP = "queryScoreTemp";
+    private final String QUERY_SCORE_TEMP_WITH_TRADE_ID = "queryScoreTempWithTradeId";
+    private final String QUERY_SCORE_TEMP_WITH_EXPIRED = "getNotSyncScoreTemp";
+    private final String CLOSE_TRADE = "closeTrade";
+    private final String ENROLL_TEMP_SCORE = "enrollTempScore";
+    private final String ENROLL_SCORE = "enrollScore";
     ////////
 
     public ChaincodeInvocationImpl() {
         this.chaincodeID = ChaincodeID.newBuilder().setName(CHAINCODE_NAME).build();
         this.objectMapper = new ObjectMapper();
+        this.fabricChaincodeClient = new FabricChaincodeClient();
     }
 
     @Override
@@ -70,17 +75,17 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         SellAvg sellAvg = new SellAvg();
         SellSum sellSum = userVo.getSellSum();
         double sellTotAvg = Calculator.evalTotAvg(sellSum.getTotSum(), userVo.getSellAmt(), userVo.getSellEx());
-        sellAvg.setTotAvg(sellTotAvg);
+        sellAvg.setTotAvg(sellTotAvg / 3);
 
         double sellEvalAvg1 =
                 Calculator.evalTotAvg(sellSum.getEvalSum01(), userVo.getSellAmt(), userVo.getSellEx());
         sellAvg.setEvalAvg1(sellEvalAvg1);
         double sellEvalAvg2 =
                 Calculator.evalTotAvg(sellSum.getEvalSum02(), userVo.getSellAmt(), userVo.getSellEx());
-        sellAvg.setEvalAvg1(sellEvalAvg2);
+        sellAvg.setEvalAvg2(sellEvalAvg2);
         double sellEvalAvg3 =
                 Calculator.evalTotAvg(sellSum.getEvalSum03(), userVo.getSellAmt(), userVo.getSellEx());
-        sellAvg.setEvalAvg1(sellEvalAvg3);
+        sellAvg.setEvalAvg3(sellEvalAvg3);
         userVo.setSellAvg(sellAvg);
 
         /**
@@ -89,17 +94,17 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         BuyAvg buyAvg = new BuyAvg();
         BuySum buySum = userVo.getBuySum();
         double buyTotAvg = Calculator.evalTotAvg(buySum.getTotSum(), userVo.getBuyAmt(), userVo.getBuyEx());
-        buyAvg.setTotAvg(buyTotAvg);
+        buyAvg.setTotAvg(buyTotAvg / 3);
 
         double buyEvalAvg1 =
                 Calculator.evalTotAvg(buySum.getEvalSum01(), userVo.getBuyAmt(), userVo.getBuyEx());
         buyAvg.setEvalAvg1(buyEvalAvg1);
         double buyEvalAvg2 =
                 Calculator.evalTotAvg(buySum.getEvalSum02(), userVo.getBuyAmt(), userVo.getBuyEx());
-        buyAvg.setEvalAvg1(buyEvalAvg2);
+        buyAvg.setEvalAvg2(buyEvalAvg2);
         double buyEvalAvg3 =
                 Calculator.evalTotAvg(buySum.getEvalSum03(), userVo.getBuyAmt(), userVo.getBuyEx());
-        buyAvg.setEvalAvg1(buyEvalAvg3);
+        buyAvg.setEvalAvg3(buyEvalAvg3);
         userVo.setBuyAvg(buyAvg);
 
         /**
@@ -109,20 +114,91 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         TradeSum tradeSum = userVo.getTradeSum();
         double tradeTotAvg = Calculator.totAvg(tradeSum.getTotSum(), userVo.getSellAmt(), userVo.getBuyAmt(),
                 userVo.getSellEx(), userVo.getBuyEx());
-        buyAvg.setTotAvg(tradeTotAvg);
+        tradeAvg.setTotAvg(tradeTotAvg / 3);
 
         double tradeEvalAvg1 =
                 Calculator.totAvg(tradeSum.getEvalSum01(), userVo.getSellAmt(), userVo.getBuyAmt(),
                         userVo.getSellEx(), userVo.getBuyEx());
-        buyAvg.setEvalAvg1(tradeEvalAvg1);
+        tradeAvg.setEvalAvg1(tradeEvalAvg1);
         double tradeEvalAvg2 =
                 Calculator.totAvg(tradeSum.getEvalSum02(), userVo.getSellAmt(), userVo.getBuyAmt(),
                         userVo.getSellEx(), userVo.getBuyEx());
-        buyAvg.setEvalAvg1(tradeEvalAvg2);
+        tradeAvg.setEvalAvg2(tradeEvalAvg2);
         double tradeEvalAvg3 =
                 Calculator.totAvg(tradeSum.getEvalSum03(), userVo.getSellAmt(), userVo.getBuyAmt(),
                         userVo.getSellEx(), userVo.getBuyEx());
-        buyAvg.setEvalAvg1(tradeEvalAvg3);
+        tradeAvg.setEvalAvg3(tradeEvalAvg3);
+        userVo.setTradeAvg(tradeAvg);
+
+        return userVo;
+    }
+
+    @Override
+    public UserVo queryTotalUser(Channel channel, HFClient client) throws Exception {
+        String result =
+                fabricChaincodeClient.query(channel, client, QUERY_USER, chaincodeID,
+                        new String[] { "TOTAL_USER" });
+        UserVo userVo = objectMapper.readValue(result, UserVo.class);
+
+        /**
+         * 판매자 평균 판매 평균점수 = 판매 평가점수 합 / (판매 총 판매량 - 판매 평가받지 않은 판매량)
+         */
+        SellAvg sellAvg = new SellAvg();
+        SellSum sellSum = userVo.getSellSum();
+        double sellTotAvg = Calculator.evalTotAvg(sellSum.getTotSum(), userVo.getSellAmt(), userVo.getSellEx());
+        sellAvg.setTotAvg(sellTotAvg / 3);
+
+        double sellEvalAvg1 =
+                Calculator.evalTotAvg(sellSum.getEvalSum01(), userVo.getSellAmt(), userVo.getSellEx());
+        sellAvg.setEvalAvg1(sellEvalAvg1);
+        double sellEvalAvg2 =
+                Calculator.evalTotAvg(sellSum.getEvalSum02(), userVo.getSellAmt(), userVo.getSellEx());
+        sellAvg.setEvalAvg2(sellEvalAvg2);
+        double sellEvalAvg3 =
+                Calculator.evalTotAvg(sellSum.getEvalSum03(), userVo.getSellAmt(), userVo.getSellEx());
+        sellAvg.setEvalAvg3(sellEvalAvg3);
+        userVo.setSellAvg(sellAvg);
+
+        /**
+         * 구매자 평균 구매 평가점수 합 / (구매 총 구매량 - 구매 평가받지 않은 구매량)
+         */
+        BuyAvg buyAvg = new BuyAvg();
+        BuySum buySum = userVo.getBuySum();
+        double buyTotAvg = Calculator.evalTotAvg(buySum.getTotSum(), userVo.getBuyAmt(), userVo.getBuyEx());
+        buyAvg.setTotAvg(buyTotAvg / 3);
+
+        double buyEvalAvg1 =
+                Calculator.evalTotAvg(buySum.getEvalSum01(), userVo.getBuyAmt(), userVo.getBuyEx());
+        buyAvg.setEvalAvg1(buyEvalAvg1);
+        double buyEvalAvg2 =
+                Calculator.evalTotAvg(buySum.getEvalSum02(), userVo.getBuyAmt(), userVo.getBuyEx());
+        buyAvg.setEvalAvg2(buyEvalAvg2);
+        double buyEvalAvg3 =
+                Calculator.evalTotAvg(buySum.getEvalSum03(), userVo.getBuyAmt(), userVo.getBuyEx());
+        buyAvg.setEvalAvg3(buyEvalAvg3);
+        userVo.setBuyAvg(buyAvg);
+
+        /**
+         * 거래 평균 거래 평가점수 합 / ((판매 총 판매량 + 구매 총 판매량) - (평가받지 않은 판매량 + 평가받지 않은 구매량))
+         */
+        TradeAvg tradeAvg = new TradeAvg();
+        TradeSum tradeSum = userVo.getTradeSum();
+        double tradeTotAvg = Calculator.totAvg(tradeSum.getTotSum(), userVo.getSellAmt(), userVo.getBuyAmt(),
+                userVo.getSellEx(), userVo.getBuyEx());
+        tradeAvg.setTotAvg(tradeTotAvg / 3);
+
+        double tradeEvalAvg1 =
+                Calculator.totAvg(tradeSum.getEvalSum01(), userVo.getSellAmt(), userVo.getBuyAmt(),
+                        userVo.getSellEx(), userVo.getBuyEx());
+        tradeAvg.setEvalAvg1(tradeEvalAvg1);
+        double tradeEvalAvg2 =
+                Calculator.totAvg(tradeSum.getEvalSum02(), userVo.getSellAmt(), userVo.getBuyAmt(),
+                        userVo.getSellEx(), userVo.getBuyEx());
+        tradeAvg.setEvalAvg2(tradeEvalAvg2);
+        double tradeEvalAvg3 =
+                Calculator.totAvg(tradeSum.getEvalSum03(), userVo.getSellAmt(), userVo.getBuyAmt(),
+                        userVo.getSellEx(), userVo.getBuyEx());
+        tradeAvg.setEvalAvg3(tradeEvalAvg3);
         userVo.setTradeAvg(tradeAvg);
 
         return userVo;
@@ -139,49 +215,67 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
     }
 
     @Override
-    public TradeVo queryTradeWithQueryString(Channel channel, HFClient client, String queryString)
+    public List<TradeVo> queryTradeWithQueryString(Channel channel, HFClient client, String queryString)
             throws Exception {
         String result = fabricChaincodeClient.query(channel, client, QUERY_TRADE_WITH_QUERY_STRING, chaincodeID,
                 new String[] { queryString });
-        TradeVo tradeVo = objectMapper.readValue(result, TradeVo.class);
-        return tradeVo;
+
+        List<TradeVo> tradeVos = objectMapper.readValue(result, new TypeReference<List<TradeVo>>() {});
+        return tradeVos;
     }
 
     @Override
-    public TradeVo queryTradeWithUser(Channel channel, HFClient client, String userTkn, ConditionType conditionType,
+    public List<TradeVo> queryTradeWithUser(Channel channel, HFClient client, String userTkn,
+            ConditionType conditionType,
             OrderType orderType, ReportType reportType, String pageSize, String pageNum, String bookmark)
             throws Exception {
         String result = fabricChaincodeClient.query(channel, client, QUERY_TRADE_WITH_USER, chaincodeID,
-                new String[] { userTkn, conditionType.getValue(), orderType.getValue(), reportType.getValue(), pageSize, pageNum, bookmark });
-        TradeVo tradeVo = objectMapper.readValue(result, TradeVo.class);
-        return tradeVo;
+                new String[] { userTkn, conditionType.getValue(), orderType.getValue(), reportType.getValue(),
+                        pageSize, pageNum, bookmark });
+        List<TradeVo> tradeVos = objectMapper.readValue(result, new TypeReference<List<TradeVo>>() {});
+        return tradeVos;
     }
 
     @Override
-    public TradeVo queryTradeUserService(Channel channel, HFClient client, String userTkn, String serviceCode,
+    public List<TradeVo> queryTradeWithUser(Channel channel, HFClient client, String userTkn,
+            ConditionType conditionType,
+            OrderType orderType, String pageSize, String pageNum, String bookmark)
+            throws Exception {
+        String result = fabricChaincodeClient.query(channel, client, QUERY_TRADE_WITH_USER, chaincodeID,
+                new String[] { userTkn, conditionType.getValue(), orderType.getValue(),
+                        ReportType.PAGE.getValue(), pageSize, pageNum, bookmark });
+        List<TradeVo> tradeVos = objectMapper.readValue(result, new TypeReference<List<TradeVo>>() {});
+        return tradeVos;
+    }
+
+    @Override
+    public List<TradeVo> queryTradeWithUserService(Channel channel, HFClient client, String userTkn,
+            String serviceCode,
             ConditionType conditionType,
             OrderType orderType, ReportType reportType, String pageSize, String pageNum,
             String bookmark) throws Exception {
-        String result = fabricChaincodeClient.query(channel, client, QUERY_TRADE_USER_SERVICE, chaincodeID,
-                new String[] { userTkn, serviceCode, conditionType.getValue(), orderType.getValue(), reportType.getValue(), pageSize, pageNum, bookmark });
-        TradeVo tradeVo = objectMapper.readValue(result, TradeVo.class);
-        return tradeVo;
+        String result = fabricChaincodeClient.query(channel, client, QUERY_TRADE_WITH_USER_SERVICE, chaincodeID,
+                new String[] { userTkn, serviceCode, conditionType.getValue(), orderType.getValue(),
+                        reportType.getValue(), pageSize, pageNum, bookmark });
+        List<TradeVo> tradeVos = objectMapper.readValue(result, new TypeReference<List<TradeVo>>() {});
+        return tradeVos;
     }
 
     @Override
-    public TradeVo queryTradeService(Channel channel, HFClient client, String serviceCode, OrderType orderType,
+    public List<TradeVo> queryTradeWithService(Channel channel, HFClient client, String serviceCode,
+            OrderType orderType,
             ReportType reportType, String pageSize, String pageNum, String bookmark) throws Exception {
-        String result = fabricChaincodeClient.query(channel, client, QUERY_TRADE_SERVICE, chaincodeID,
-                new String[] { serviceCode, orderType.getValue(), reportType.getValue(), pageSize, pageNum, bookmark });
-        TradeVo tradeVo = objectMapper.readValue(result, TradeVo.class);
-        return tradeVo;
+        String result = fabricChaincodeClient.query(channel, client, QUERY_TRADE_WITH_SERVICE, chaincodeID,
+                new String[] { serviceCode, orderType.getValue(), reportType.getValue(), pageSize, pageNum,
+                        bookmark });
+        List<TradeVo> tradeVos = objectMapper.readValue(result, new TypeReference<List<TradeVo>>() {});
+        return tradeVos;
     }
 
     @Override
-    public TradeVo queryTradeWithId(Channel channel, HFClient client, String tradeId, String serviceCode,
-            String sellerTkn, String buyerTkn) throws Exception {
+    public TradeVo queryTradeWithId(Channel channel, HFClient client, String tradeId) throws Exception {
         String result = fabricChaincodeClient.query(channel, client, QUERY_TRADE_WITH_ID, chaincodeID,
-                new String[] { tradeId, serviceCode, sellerTkn, buyerTkn });
+                new String[] { tradeId });
         TradeVo tradeVo = objectMapper.readValue(result, TradeVo.class);
         return tradeVo;
     }
@@ -195,13 +289,21 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
     }
 
     @Override
-    public TradeVo queryScoreTempWithTradeId(Channel channel, HFClient client, String queryString)
+    public ScoreVo queryScoreTempWithTradeId(Channel channel, HFClient client, String tradeId)
             throws Exception {
         String result =
                 fabricChaincodeClient.query(channel, client, QUERY_SCORE_TEMP_WITH_TRADE_ID, chaincodeID,
-                        new String[] { queryString });
-        TradeVo tradeVo = objectMapper.readValue(result, TradeVo.class);
-        return tradeVo;
+                        new String[] { tradeId });
+        ScoreVo scoreVo = objectMapper.readValue(result, ScoreVo.class);
+        return scoreVo;
+    }
+
+    @Override
+    public List<ScoreVo> queryScoreTempWithExpired(Channel channel, HFClient client) throws Exception {
+        String result = fabricChaincodeClient.query(channel, client, QUERY_SCORE_TEMP_WITH_EXPIRED,
+                                                    chaincodeID, EMPTY_ARGS);
+
+        return objectMapper.readValue(result, new TypeReference<List<ScoreVo>>() {});
     }
 
     @Override
@@ -213,22 +315,21 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
     }
 
     @Override
-    public boolean enrollTempScore(Channel channel, HFClient client, String tradeId, String scoreOrigin,
-            String division, String key) throws Exception {
+    public boolean enrollTempScore(Channel channel, HFClient client, String tradeId, String userTkn,
+            String scoreOrigin, String key) throws Exception {
         boolean result =
                 fabricChaincodeClient.invoke(channel, client, ENROLL_TEMP_SCORE, chaincodeID, CHAINCODE_LANG,
-                        new String[] { tradeId, scoreOrigin, division, key });
+                        new String[] { tradeId, userTkn, scoreOrigin, key });
         return result;
     }
 
     @Override
-    public ScoreVo queryTempScoreWithCondition(Channel channel, HFClient client, String tradeId)
-            throws Exception {
-        String result =
-                fabricChaincodeClient.query(channel, client, QUERY_TEMP_SCORE_WITH_CONDITION, chaincodeID,
-                        new String[] { tradeId });
-        ScoreVo scoreVo = objectMapper.readValue(result, ScoreVo.class);
-        return scoreVo;
+    public boolean enrollTempScore(Channel channel, HFClient client, String tradeId, String scoreOrigin,
+            String userTkn) throws Exception {
+        boolean result =
+                fabricChaincodeClient.invoke(channel, client, ENROLL_TEMP_SCORE, chaincodeID, CHAINCODE_LANG,
+                        new String[] { tradeId, scoreOrigin, userTkn, "key1234" });
+        return result;
     }
 
     @Override
@@ -236,7 +337,7 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         boolean result =
                 fabricChaincodeClient.invoke(channel, client, ENROLL_SCORE, chaincodeID, CHAINCODE_LANG,
                         new String[] { tradeId, key });
+
         return result;
     }
-
 }
