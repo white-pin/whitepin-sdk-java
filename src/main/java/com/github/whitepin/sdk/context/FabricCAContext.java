@@ -16,11 +16,6 @@
 
 package com.github.whitepin.sdk.context;
 
-import java.util.EnumSet;
-import java.util.Properties;
-
-import org.hyperledger.fabric.sdk.Peer.PeerRole;
-
 /**
  * Fabric peer node context
  */
