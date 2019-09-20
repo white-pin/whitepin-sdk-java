@@ -74,8 +74,8 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
          */
         SellAvg sellAvg = new SellAvg();
         SellSum sellSum = userVo.getSellSum();
-        double sellTotAvg = Calculator.evalTotAvg(sellSum.getTotSum(), userVo.getSellAmt(), userVo.getSellEx());
-        sellAvg.setTotAvg(sellTotAvg / 3);
+        double sellTotAvg = Calculator.evalTotAvg(sellSum.getTotSum(), userVo.getSellAmt(), userVo.getSellEx(), 3);
+        sellAvg.setTotAvg(sellTotAvg);
 
         double sellEvalAvg1 =
                 Calculator.evalTotAvg(sellSum.getEvalSum01(), userVo.getSellAmt(), userVo.getSellEx());
@@ -93,8 +93,8 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
          */
         BuyAvg buyAvg = new BuyAvg();
         BuySum buySum = userVo.getBuySum();
-        double buyTotAvg = Calculator.evalTotAvg(buySum.getTotSum(), userVo.getBuyAmt(), userVo.getBuyEx());
-        buyAvg.setTotAvg(buyTotAvg / 3);
+        double buyTotAvg = Calculator.evalTotAvg(buySum.getTotSum(), userVo.getBuyAmt(), userVo.getBuyEx(), 3);
+        buyAvg.setTotAvg(buyTotAvg);
 
         double buyEvalAvg1 =
                 Calculator.evalTotAvg(buySum.getEvalSum01(), userVo.getBuyAmt(), userVo.getBuyEx());
@@ -113,8 +113,8 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
         TradeAvg tradeAvg = new TradeAvg();
         TradeSum tradeSum = userVo.getTradeSum();
         double tradeTotAvg = Calculator.totAvg(tradeSum.getTotSum(), userVo.getSellAmt(), userVo.getBuyAmt(),
-                userVo.getSellEx(), userVo.getBuyEx());
-        tradeAvg.setTotAvg(tradeTotAvg / 3);
+                userVo.getSellEx(), userVo.getBuyEx(), 3);
+        tradeAvg.setTotAvg(tradeTotAvg);
 
         double tradeEvalAvg1 =
                 Calculator.totAvg(tradeSum.getEvalSum01(), userVo.getSellAmt(), userVo.getBuyAmt(),
@@ -328,7 +328,7 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
             String userTkn) throws Exception {
         boolean result =
                 fabricChaincodeClient.invoke(channel, client, ENROLL_TEMP_SCORE, chaincodeID, CHAINCODE_LANG,
-                        new String[] { tradeId, scoreOrigin, userTkn, "key1234" });
+                        new String[] { tradeId, userTkn, scoreOrigin, "key1234" });
         return result;
     }
 
