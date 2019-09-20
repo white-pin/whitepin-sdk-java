@@ -33,7 +33,7 @@ public class ChaincodeInvocationImpl implements ChaincodeInvocation {
     private String CHAINCODE_NAME = "whitepin";
     private Type CHAINCODE_LANG = Type.GO_LANG;
 
-    private final String[] EMPTY_ARGS = new String[]{};
+    private final String[] EMPTY_ARGS = new String[] { "" };
     private final String ADD_USER = "addUser";
     private final String QUERY_USER = "queryUser";
     private final String CREATE_TRADE = "createTrade";
