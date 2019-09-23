@@ -24,6 +24,8 @@ import com.github.whitepin.sdk.whitepin.invocation.ChaincodeInvocationImpl;
 import com.github.whitepin.sdk.whitepin.vo.ScoreVo;
 import com.github.whitepin.sdk.whitepin.vo.TradeVo;
 import com.github.whitepin.sdk.whitepin.vo.UserVo;
+import com.github.whitepin.sdk.whitepin.vo.UserVo.BuyAvg;
+import com.github.whitepin.sdk.whitepin.vo.UserVo.SellAvg;
 
 public class FabricChaincodeInvocationIT {
 
@@ -56,11 +58,24 @@ public class FabricChaincodeInvocationIT {
     @ParameterizedTest
 //    @Disabled
     @DisplayName("사용자 조회 테스트")
-    @ValueSource(strings = { "BB" })
+    @ValueSource(strings = { "tae" })
     void queryUserTest(String userTkn) throws Exception {
         UserVo userVo = chaincodeInvocation.queryUser(channel, client, userTkn);
+        SellAvg sellAvg = userVo.getSellAvg();
+        BuyAvg buyAvg = userVo.getBuyAvg();
+        
+        System.out.println("sell evaluation average1 :: " + sellAvg.getEvalAvg1());
+        System.out.println("sell evaluation average2 :: " + sellAvg.getEvalAvg2());
+        System.out.println("sell evaluation average3 :: " + sellAvg.getEvalAvg3());
+        System.out.println("sell evaluation average total :: " + sellAvg.getTotAvg());
+        
+        System.out.println("buy evaluation average1 :: " + buyAvg.getEvalAvg1());
+        System.out.println("buy evaluation average2 :: " + buyAvg.getEvalAvg2());
+        System.out.println("buy evaluation average3 :: " + buyAvg.getEvalAvg3());
+        System.out.println("buy evaluation average total :: " + buyAvg.getTotAvg());
+        
         assertThat(userVo.getUserTkn())
-                .isEqualTo("BB");
+                .isEqualTo("yong");
     }
 
     @ParameterizedTest
@@ -169,7 +184,7 @@ public class FabricChaincodeInvocationIT {
     }
 
     @ParameterizedTest
-//    @Disabled
+    @Disabled
     @DisplayName("score key로 점수 조회 테스트")
     @ValueSource(strings = { "AB01_ScoreTemp" })
     void queryScoreTempTest(String scoreKey) throws Exception {
@@ -187,6 +202,7 @@ public class FabricChaincodeInvocationIT {
     }
 
     @Test
+    @Disabled
     void queryScoreTempWithExpired() throws Exception {
         List<ScoreVo> scores = chaincodeInvocation.queryScoreTempWithExpired(channel, client);
         System.out.println(scores.size());
