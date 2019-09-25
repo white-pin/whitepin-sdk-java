@@ -19,23 +19,6 @@ import com.github.whitepin.sdk.context.FabricUserContext;
 
 public class FabricContruct {
 
-	// TODO :: properties로...
-	// private final String caName = "ca0.caorg.test3";
-	// private final String caLocation = "http://192.168.30.15:7054";
-	// private final String userName = "caadmin@RootCA";
-	// private final String userPassword = "1q2w3e4r5T";
-	//
-	// private final String orgMsp = "peerorg1";
-	//
-	// private final String ordererName = "orderer0.ordererorg.test3";
-	// private final String ordererLocation = "grpc://192.168.30.16:7050";
-	// private final String peerName1 = "peer0";
-	// private final String peerLocation1 = "grpc://192.168.30.17:7051";
-	// private final String peerName2 = "peer1";
-	// private final String peerLocation2 = "grpc://192.168.30.18:7051";
-	//
-	// private final String channelName = "channel02";
-
 	private String caName;
 	private String caLocation;
 	private String userName;
@@ -152,6 +135,25 @@ public class FabricContruct {
 		this.peerLocation1 = "grpc://192.168.7.30:7051";
 		
 		this.channelName = "whitepin-main-channel";
+	}
+
+	/**
+	 * TEMP.....
+	 */
+	public FabricContruct(String caName, String caLocation, String userName, String userPassword,
+						  String orgMsp, String ordererName, String ordererLocation, String peerName1,
+						  String peerLocation1, String channelName) {
+
+		this.caName = caName;
+		this.caLocation = caLocation;
+		this.userName = userName;
+		this.userPassword = userPassword;
+		this.orgMsp = orgMsp;
+		this.ordererName = ordererName;
+		this.ordererLocation = ordererLocation;
+		this.peerName1 = peerName1;
+		this.peerLocation1 = peerLocation1;
+		this.channelName = channelName;
 	}
 
 	public void setUp() throws Exception {

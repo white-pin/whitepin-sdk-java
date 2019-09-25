@@ -1,0 +1,44 @@
+######################################
+## Fabric ca configurations
+######################################
+ca:
+  - name: ca.whitepin.com
+    location: http://192.168.7.30:7054
+    username: Admin@Whitepin
+    password: WhitepinPWD
+
+######################################
+## Fabric organization configs
+######################################
+orgs:
+  - orgType: ORDERER
+    name: ordererorg
+    domain: whitepin.com
+    # orderer nodes info
+    nodes:
+      - name: orderer0
+        location: grpc://192.168.7.30:7050
+        # TODO : tls properties
+    # org users info
+    users:
+      - name:
+        affiliation:
+        mspId:
+        admin:
+        # TODO : cert properties
+        cert:
+          privateKey:
+          enrollment:
+
+######################################
+## Fabric channel configurations
+######################################
+channels:
+  - name: whitepin-main-channel
+    # name of org e.g) ordererorg
+    client:
+    orderers:
+      - orderer0
+    peers:
+      - peer0
+
